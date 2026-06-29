@@ -265,8 +265,6 @@ window.selecionarResposta = function(resposta){
 
 let contadorQuestoes = 1;
 
-let contadorQuestoes = 1;
-
 window.adicionarQuestao = function(){
 
     contadorQuestoes++;
