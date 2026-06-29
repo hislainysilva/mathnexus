@@ -37,23 +37,43 @@ function liberarMissao() {
 }
 
 function entrarAluno() {
+
     const campos = document.querySelectorAll(".campo");
 
     const aluno = {
+
         nome: campos[0].value,
+
         turma: campos[1].value,
+
+        codigo: campos[2].value.toUpperCase(),
+
         avatar: localStorage.getItem("avatarAluno") || "😀",
+
         cor: localStorage.getItem("corAluno") || "azul"
+
     };
 
-    if (!aluno.nome || aluno.turma === "Selecione sua turma") {
-        alert("Digite seu nome e selecione sua turma.");
+    if (
+        !aluno.nome ||
+        aluno.turma === "Selecione sua turma" ||
+        !aluno.codigo
+    ) {
+
+        alert(
+            "Digite seu nome, selecione sua turma e informe o código da missão."
+        );
+
         return;
     }
 
-    localStorage.setItem("alunoAtual", JSON.stringify(aluno));
+    localStorage.setItem(
+        "alunoAtual",
+        JSON.stringify(aluno)
+    );
 
-    window.location.href = "missao-aluno.html";
+    window.location.href =
+        "missao-aluno.html";
 }
 
 function selecionarAvatar(botao) {
