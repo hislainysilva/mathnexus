@@ -130,10 +130,37 @@ function enviarResposta(){
 }
 
 function gerarCodigoMissao() {
-    const prefixos = ["MATH", "ROB", "EXP", "NEXUS"];
-    const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
-    const numero = Math.floor(1000 + Math.random() * 9000);
 
-    document.getElementById("codigoMissao").value =
+    const prefixos = [
+        "MATH",
+        "ROB",
+        "EXP",
+        "NEXUS"
+    ];
+
+    const prefixo =
+        prefixos[
+            Math.floor(
+                Math.random() *
+                prefixos.length
+            )
+        ];
+
+    const numero =
+        Math.floor(
+            1000 +
+            Math.random() * 9000
+        );
+
+    const codigo =
         `${prefixo}-${numero}`;
+
+    document.getElementById(
+        "codigoMissao"
+    ).value = codigo;
+
+    document.getElementById(
+        "codigoGerado"
+    ).innerHTML =
+        `🎯 Código da missão: <strong>${codigo}</strong>`;
 }
