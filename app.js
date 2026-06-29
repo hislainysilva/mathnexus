@@ -265,6 +265,8 @@ window.selecionarResposta = function(resposta){
 
 let contadorQuestoes = 1;
 
+let contadorQuestoes = 1;
+
 window.adicionarQuestao = function(){
 
     contadorQuestoes++;
@@ -277,29 +279,34 @@ window.adicionarQuestao = function(){
 
         <div class="cardQuestao">
 
-            <h3>
+            <h2>
                 Questão ${contadorQuestoes}
-            </h3>
+            </h2>
 
             <textarea
-                class="perguntaQuestao"
-                placeholder="Digite a pergunta">
+                class="campo perguntaQuestao"
+                placeholder="Digite a pergunta"
+                rows="4">
             </textarea>
 
             <input
-                class="altA"
+                type="text"
+                class="campo altA"
                 placeholder="Alternativa A">
 
             <input
-                class="altB"
+                type="text"
+                class="campo altB"
                 placeholder="Alternativa B">
 
             <input
-                class="altC"
+                type="text"
+                class="campo altC"
                 placeholder="Alternativa C">
 
             <input
-                class="altD"
+                type="text"
+                class="campo altD"
                 placeholder="Alternativa D">
 
         </div>
