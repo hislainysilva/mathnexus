@@ -154,8 +154,7 @@ window.selecionarCor = function(cor) {
     localStorage.setItem("corAluno", cor.classList[1]);
 }
 
-wwindow.enviarResposta = async function(){
-
+window.enviarResposta = async function(){
     const aluno = JSON.parse(
         localStorage.getItem("alunoAtual")
     );
