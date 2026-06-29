@@ -73,3 +73,27 @@ function selecionarCor(cor) {
     cor.classList.add("ativa");
     localStorage.setItem("corAluno", cor.classList[1]);
 }
+function enviarResposta(){
+
+    const aluno =
+        JSON.parse(localStorage.getItem("alunoAtual"));
+
+    const resposta =
+        document.getElementById("respostaAluno").value;
+
+    const respostas =
+        JSON.parse(localStorage.getItem("respostas")) || [];
+
+    respostas.push({
+        nome: aluno.nome,
+        turma: aluno.turma,
+        resposta: resposta
+    });
+
+    localStorage.setItem(
+        "respostas",
+        JSON.stringify(respostas)
+    );
+
+    alert("Resposta enviada!");
+}
