@@ -310,13 +310,6 @@ window.adicionarQuestao = function(){
     `;
 }
 
-import {
-    onSnapshot
-}
-from
-"https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
-
 window.abrirPainel = function(){
 
     const codigo =
