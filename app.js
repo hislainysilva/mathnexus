@@ -214,3 +214,24 @@ window.gerarCodigoMissao = function() {
     ).innerHTML =
         `🎯 Código da missão: <strong>${codigo}</strong>`;
 }
+
+window.selecionarResposta = function(resposta){
+
+    document
+        .querySelectorAll(".alternativa")
+        .forEach(botao => {
+            botao.classList.remove(
+                "selecionada"
+            );
+        });
+
+    event.target.classList.add(
+        "selecionada"
+    );
+
+    document
+        .getElementById(
+            "respostaAluno"
+        )
+        .value = resposta;
+}
