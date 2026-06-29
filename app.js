@@ -1,8 +1,47 @@
 import { collection, addDoc, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 
-window.salvarMissao = async function() {
+/* =========================
+   MISSÕES - PROFESSORA
+========================= */
 
+window.gerarCodigoMissao = function() {
+    const prefixos = ["MATH", "ROB", "EXP", "NEXUS"];
+    const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+    const numero = Math.floor(1000 + Math.random() * 9000);
+    const codigo = `${prefixo}-${numero}`;
+
+    document.getElementById("codigoMissao").value = codigo;
+
+    const codigoGerado = document.getElementById("codigoGerado");
+    if (codigoGerado) {
+        codigoGerado.innerHTML = `🎯 Código da missão: <strong>${codigo}</strong>`;
+    }
+};
+
+let contadorQuestoes = 1;
+
+window.adicionarQuestao = function() {
+    contadorQuestoes++;
+
+    document.getElementById("listaQuestoes").innerHTML += `
+        <div class="cardQuestao">
+            <h2>Questão ${contadorQuestoes}</h2>
+
+            <textarea
+                class="campo perguntaQuestao"
+                placeholder="Digite a pergunta"
+                rows="4"></textarea>
+
+            <input type="text" class="campo altA" placeholder="Alternativa A">
+            <input type="text" class="campo altB" placeholder="Alternativa B">
+            <input type="text" class="campo altC" placeholder="Alternativa C">
+            <input type="text" class="campo altD" placeholder="Alternativa D">
+        </div>
+    `;
+};
+
+window.salvarMissao = async function() {
     const campos = document.querySelectorAll(".campo");
 
     const questoes = [];
@@ -47,9 +86,9 @@ window.salvarMissao = async function() {
     localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
     alert("Missão com várias questões salva com sucesso!");
-}
-window.liberarMissao = async function() {
+};
 
+window.liberarMissao = function() {
     const missaoSalva = localStorage.getItem("missaoAtual");
 
     if (!missaoSalva) {
@@ -63,84 +102,49 @@ window.liberarMissao = async function() {
     localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
     alert("Missão liberada!");
-}
+};
+
+/* =========================
+   ALUNO
+========================= */
+
 window.entrarAluno = async function() {
+    const campos = document.querySelectorAll(".campo");
 
-    const campos =
-        document.querySelectorAll(".campo");
-
-    const codigo =
-        campos[2].value.toUpperCase();
+    const codigo = campos[2].value.toUpperCase();
 
     const aluno = {
-
         nome: campos[0].value,
-
         turma: campos[1].value,
-
         codigo: codigo,
-
-        avatar:
-            localStorage.getItem("avatarAluno")
-            || "😀",
-
-        cor:
-            localStorage.getItem("corAluno")
-            || "azul"
+        avatar: localStorage.getItem("avatarAluno") || "😀",
+        cor: localStorage.getItem("corAluno") || "azul"
     };
 
-    if(
-        !aluno.nome ||
-        aluno.turma ===
-        "Selecione sua turma" ||
-        !codigo
-    ){
-
-        alert(
-            "Preencha todos os campos."
-        );
-
+    if (!aluno.nome || aluno.turma === "Selecione sua turma" || !codigo) {
+        alert("Preencha todos os campos.");
         return;
     }
 
-    const consulta =
-        query(
-            collection(db,"missoes"),
-            where(
-                "codigo",
-                "==",
-                codigo
-            )
-        );
+    const consulta = query(
+        collection(db, "missoes"),
+        where("codigo", "==", codigo)
+    );
 
-    const resultado =
-        await getDocs(consulta);
+    const resultado = await getDocs(consulta);
 
-    if(resultado.empty){
-
-        alert(
-            "Código da missão não encontrado."
-        );
-
+    if (resultado.empty) {
+        alert("Código da missão não encontrado.");
         return;
     }
 
-    const missao =
-        resultado.docs[0].data();
+    const missao = resultado.docs[0].data();
 
-    localStorage.setItem(
-        "alunoAtual",
-        JSON.stringify(aluno)
-    );
+    localStorage.setItem("alunoAtual", JSON.stringify(aluno));
+    localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
-    localStorage.setItem(
-        "missaoAtual",
-        JSON.stringify(missao)
-    );
-
-    window.location.href =
-        "missao-aluno.html";
-}
+    window.location.href = "missao-aluno.html";
+};
 
 window.selecionarAvatar = function(botao) {
     document.querySelectorAll(".avatar").forEach(a => {
@@ -149,7 +153,7 @@ window.selecionarAvatar = function(botao) {
 
     botao.classList.add("ativo");
     localStorage.setItem("avatarAluno", botao.textContent);
-}
+};
 
 window.selecionarCor = function(cor) {
     document.querySelectorAll(".cor").forEach(c => {
@@ -158,210 +162,116 @@ window.selecionarCor = function(cor) {
 
     cor.classList.add("ativa");
     localStorage.setItem("corAluno", cor.classList[1]);
-}
+};
 
-window.enviarResposta = async function(){
-    const aluno = JSON.parse(
-        localStorage.getItem("alunoAtual")
-    );
+window.selecionarResposta = function(resposta) {
+    document.querySelectorAll(".alternativa").forEach(botao => {
+        botao.classList.remove("selecionada");
+    });
 
-    const missao = JSON.parse(
-        localStorage.getItem("missaoAtual")
-    );
+    event.target.classList.add("selecionada");
 
-    const resposta = document
-        .getElementById("respostaAluno")
-        .value;
+    document.getElementById("respostaAluno").value = resposta;
+};
 
-    if(!resposta){
+window.enviarResposta = async function() {
+    const aluno = JSON.parse(localStorage.getItem("alunoAtual"));
+    const missao = JSON.parse(localStorage.getItem("missaoAtual"));
+
+    const respostasMissao =
+        JSON.parse(localStorage.getItem("respostasMissao")) || [];
+
+    const respostaCampo = document.getElementById("respostaAluno");
+
+    const respostaFinal =
+        respostasMissao.length > 0
+            ? respostasMissao
+            : respostaCampo.value;
+
+    if (!respostaFinal || respostaFinal.length === 0) {
         alert("Escolha ou digite uma resposta.");
         return;
     }
 
-    await addDoc(
-        collection(db, "respostas"),
-        {
-            nome: aluno.nome,
-            turma: aluno.turma,
-            avatar: aluno.avatar,
-            cor: aluno.cor,
-            codigo: aluno.codigo,
-            tituloMissao: missao.titulo,
-            resposta: resposta,
-            enviadaEm: new Date()
-        }
-    );
+    await addDoc(collection(db, "respostas"), {
+        nome: aluno.nome,
+        turma: aluno.turma,
+        avatar: aluno.avatar,
+        cor: aluno.cor,
+        codigo: aluno.codigo,
+        tituloMissao: missao.titulo,
+        resposta: respostaFinal,
+        enviadaEm: new Date()
+    });
+
+    localStorage.removeItem("respostasMissao");
 
     alert("Resposta enviada com sucesso!");
-}
-window.gerarCodigoMissao = function() {
-    
-    const prefixos = [
-        "MATH",
-        "ROB",
-        "EXP",
-        "NEXUS"
-    ];
+};
 
-    const prefixo =
-        prefixos[
-            Math.floor(
-                Math.random() *
-                prefixos.length
-            )
-        ];
+/* =========================
+   PAINEL DA PROFESSORA
+========================= */
 
-    const numero =
-        Math.floor(
-            1000 +
-            Math.random() * 9000
-        );
+window.abrirPainel = function() {
+    const campoCodigo = document.getElementById("codigoPainel");
 
-    const codigo =
-        `${prefixo}-${numero}`;
+    if (!campoCodigo) {
+        alert("Campo de código não encontrado.");
+        return;
+    }
 
-    document.getElementById(
-        "codigoMissao"
-    ).value = codigo;
+    const codigo = campoCodigo.value.toUpperCase();
 
-    document.getElementById(
-        "codigoGerado"
-    ).innerHTML =
-        `🎯 Código da missão: <strong>${codigo}</strong>`;
-}
+    if (!codigo) {
+        alert("Digite o código da missão.");
+        return;
+    }
 
-window.selecionarResposta = function(resposta){
+    const consulta = query(
+        collection(db, "respostas"),
+        where("codigo", "==", codigo)
+    );
 
-    document
-        .querySelectorAll(".alternativa")
-        .forEach(botao => {
-            botao.classList.remove(
-                "selecionada"
-            );
+    onSnapshot(consulta, snapshot => {
+        let html = "";
+
+        document.getElementById("totalParticipantes").innerHTML = snapshot.size;
+        document.getElementById("totalRespostas").innerHTML = snapshot.size;
+
+        if (snapshot.empty) {
+            html = `
+                <p class="subtitle">
+                    Nenhuma resposta recebida ainda.
+                </p>
+            `;
+        }
+
+        snapshot.forEach(doc => {
+            const r = doc.data();
+
+            let respostaTexto = "";
+
+            if (Array.isArray(r.resposta)) {
+                respostaTexto = r.resposta
+                    .map(item => {
+                        return `<p><strong>Questão ${item.questao}:</strong> ${item.resposta}</p>`;
+                    })
+                    .join("");
+            } else {
+                respostaTexto = `<p><strong>Resposta:</strong> ${r.resposta}</p>`;
+            }
+
+            html += `
+                <div class="aluno-card">
+                    <h2>${r.avatar} ${r.nome}</h2>
+                    <p><strong>Turma:</strong> ${r.turma}</p>
+                    <p><strong>Missão:</strong> ${r.tituloMissao}</p>
+                    ${respostaTexto}
+                </div>
+            `;
         });
 
-    event.target.classList.add(
-        "selecionada"
-    );
-
-    document
-        .getElementById(
-            "respostaAluno"
-        )
-        .value = resposta;
-}
-
-let contadorQuestoes = 1;
-
-window.adicionarQuestao = function(){
-
-    contadorQuestoes++;
-
-    document
-        .getElementById(
-            "listaQuestoes"
-        )
-        .innerHTML += `
-
-        <div class="cardQuestao">
-
-            <h2>
-                Questão ${contadorQuestoes}
-            </h2>
-
-            <textarea
-                class="campo perguntaQuestao"
-                placeholder="Digite a pergunta"
-                rows="4">
-            </textarea>
-
-            <input
-                type="text"
-                class="campo altA"
-                placeholder="Alternativa A">
-
-            <input
-                type="text"
-                class="campo altB"
-                placeholder="Alternativa B">
-
-            <input
-                type="text"
-                class="campo altC"
-                placeholder="Alternativa C">
-
-            <input
-                type="text"
-                class="campo altD"
-                placeholder="Alternativa D">
-
-        </div>
-    `;
-}
-
-window.abrirPainel = function(){
-
-    const codigo =
-        document
-        .getElementById(
-            "codigoPainel"
-        )
-        .value
-        .toUpperCase();
-
-    const consulta =
-        query(
-            collection(
-                db,
-                "respostas"
-            ),
-            where(
-                "codigo",
-                "==",
-                codigo
-            )
-        );
-
-    onSnapshot(
-        consulta,
-        snapshot => {
-
-            let html = "";
-
-            snapshot.forEach(
-                doc => {
-
-                    const r =
-                        doc.data();
-
-                    html += `
-                        <div class="cardQuestao">
-
-                            <h2>
-                                ${r.avatar}
-                                ${r.nome}
-                            </h2>
-
-                            <p>
-                                Turma:
-                                ${r.turma}
-                            </p>
-
-                            <p>
-                                Resposta:
-                                ${r.resposta}
-                            </p>
-
-                        </div>
-                    `;
-                }
-            );
-
-            document
-                .getElementById(
-                    "painelRespostas"
-                )
-                .innerHTML = html;
-        }
-    );
-}
+        document.getElementById("painelRespostas").innerHTML = html;
+    });
+};
