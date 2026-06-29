@@ -1,6 +1,12 @@
 // MATHNEXUS - primeira versão de testes
+import { db } from "./firebase-config.js";
 
-function salvarMissao() {
+import {
+    collection,
+    addDoc
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+async function salvarMissao() {
     const campos = document.querySelectorAll(".campo");
 
     const missao = {
@@ -13,7 +19,8 @@ function salvarMissao() {
         alternativaB: campos[6].value,
         alternativaC: campos[7].value,
         alternativaD: campos[8].value,
-        liberada: false
+        liberada: false,
+        criadaEm: new Date()
     };
 
     if (!missao.codigo) {
@@ -21,14 +28,11 @@ function salvarMissao() {
         return;
     }
 
-    localStorage.setItem("missaoAtual", JSON.stringify(missao));
-
-    alert("Missão salva com sucesso!");
-}
+    await addDoc(collection(db, "missoes"), missao);
 
     localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
-    alert("Missão salva com sucesso!");
+    alert("Missão salva no Firebase com sucesso!");
 }
 
 function liberarMissao() {
