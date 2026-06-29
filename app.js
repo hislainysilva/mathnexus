@@ -1,4 +1,11 @@
 // MATHNEXUS - primeira versão de testes
+import {
+    query,
+    where,
+    getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 
 import {
@@ -51,9 +58,13 @@ window.liberarMissao = function() {
     alert("Missão liberada para os alunos!");
 }
 
-window.entrarAluno = function() {
+window.entrarAluno = async function() {
 
-    const campos = document.querySelectorAll(".campo");
+    const campos =
+        document.querySelectorAll(".campo");
+
+    const codigo =
+        campos[2].value.toUpperCase();
 
     const aluno = {
 
@@ -61,30 +72,64 @@ window.entrarAluno = function() {
 
         turma: campos[1].value,
 
-        codigo: campos[2].value.toUpperCase(),
+        codigo: codigo,
 
-        avatar: localStorage.getItem("avatarAluno") || "😀",
+        avatar:
+            localStorage.getItem("avatarAluno")
+            || "😀",
 
-        cor: localStorage.getItem("corAluno") || "azul"
-
+        cor:
+            localStorage.getItem("corAluno")
+            || "azul"
     };
 
-    if (
+    if(
         !aluno.nome ||
-        aluno.turma === "Selecione sua turma" ||
-        !aluno.codigo
-    ) {
+        aluno.turma ===
+        "Selecione sua turma" ||
+        !codigo
+    ){
 
         alert(
-            "Digite seu nome, selecione sua turma e informe o código da missão."
+            "Preencha todos os campos."
         );
 
         return;
     }
 
+    const consulta =
+        query(
+            collection(db,"missoes"),
+            where(
+                "codigo",
+                "==",
+                codigo
+            )
+        );
+
+    const resultado =
+        await getDocs(consulta);
+
+    if(resultado.empty){
+
+        alert(
+            "Código da missão não encontrado."
+        );
+
+        return;
+    }
+
+    const missao =
+        resultado.docs[0].data();
+
     localStorage.setItem(
         "alunoAtual",
         JSON.stringify(aluno)
+    );
+
+    localStorage.setItem(
+        "missaoAtual",
+        JSON.stringify(missao)
     );
 
     window.location.href =
