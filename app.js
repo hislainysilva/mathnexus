@@ -154,31 +154,41 @@ window.selecionarCor = function(cor) {
     localStorage.setItem("corAluno", cor.classList[1]);
 }
 
-window.enviarResposta = function() {
+wwindow.enviarResposta = async function(){
 
-    const aluno =
-        JSON.parse(localStorage.getItem("alunoAtual"));
-
-    const resposta =
-        document.getElementById("respostaAluno").value;
-
-    const respostas =
-        JSON.parse(localStorage.getItem("respostas")) || [];
-
-    respostas.push({
-        nome: aluno.nome,
-        turma: aluno.turma,
-        resposta: resposta
-    });
-
-    localStorage.setItem(
-        "respostas",
-        JSON.stringify(respostas)
+    const aluno = JSON.parse(
+        localStorage.getItem("alunoAtual")
     );
 
-    alert("Resposta enviada!");
-}
+    const missao = JSON.parse(
+        localStorage.getItem("missaoAtual")
+    );
 
+    const resposta = document
+        .getElementById("respostaAluno")
+        .value;
+
+    if(!resposta){
+        alert("Escolha ou digite uma resposta.");
+        return;
+    }
+
+    await addDoc(
+        collection(db, "respostas"),
+        {
+            nome: aluno.nome,
+            turma: aluno.turma,
+            avatar: aluno.avatar,
+            cor: aluno.cor,
+            codigo: aluno.codigo,
+            tituloMissao: missao.titulo,
+            resposta: resposta,
+            enviadaEm: new Date()
+        }
+    );
+
+    alert("Resposta enviada com sucesso!");
+}
 window.gerarCodigoMissao = function() {
     
     const prefixos = [
