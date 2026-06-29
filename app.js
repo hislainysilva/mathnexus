@@ -12,11 +12,6 @@ from
 "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 
-import {
-    collection,
-    addDoc
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
 window.salvarMissao = async function() {
 
     const campos = document.querySelectorAll(".campo");
