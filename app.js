@@ -117,3 +117,12 @@ function enviarResposta(){
 
     alert("Resposta enviada!");
 }
+
+function gerarCodigoMissao() {
+    const prefixos = ["MATH", "ROB", "EXP", "NEXUS"];
+    const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+    const numero = Math.floor(1000 + Math.random() * 9000);
+
+    document.getElementById("codigoMissao").value =
+        `${prefixo}-${numero}`;
+}
