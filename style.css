@@ -232,3 +232,13 @@ a.btn{
     font-size:24px;
     color:#00a8ff;
 }
+
+textarea{
+    resize:none;
+}
+
+.btn{
+    display:inline-block;
+    text-decoration:none;
+    margin:8px;
+}
