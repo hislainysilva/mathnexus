@@ -14,19 +14,38 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 window.salvarMissao = async function() {
+
     const campos = document.querySelectorAll(".campo");
+
+    const questoes = [];
+
+    questoes.push({
+        numero: 1,
+        pergunta: campos[4].value,
+        A: campos[5].value,
+        B: campos[6].value,
+        C: campos[7].value,
+        D: campos[8].value
+    });
+
+    document.querySelectorAll(".cardQuestao").forEach((card, index) => {
+        questoes.push({
+            numero: index + 2,
+            pergunta: card.querySelector(".perguntaQuestao").value,
+            A: card.querySelector(".altA").value,
+            B: card.querySelector(".altB").value,
+            C: card.querySelector(".altC").value,
+            D: card.querySelector(".altD").value
+        });
+    });
 
     const missao = {
         codigo: campos[0].value,
         titulo: campos[1].value,
         turma: campos[2].value,
         tipo: campos[3].value,
-        pergunta: campos[4].value,
-        alternativaA: campos[5].value,
-        alternativaB: campos[6].value,
-        alternativaC: campos[7].value,
-        alternativaD: campos[8].value,
-        liberada: false,
+        questoes: questoes,
+        liberada: true,
         criadaEm: new Date()
     };
 
@@ -39,9 +58,8 @@ window.salvarMissao = async function() {
 
     localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
-    alert("Missão salva no Firebase com sucesso!");
+    alert("Missão com várias questões salva com sucesso!");
 }
-
 window.liberarMissao = async function() {
 
     const missaoSalva = localStorage.getItem("missaoAtual");
