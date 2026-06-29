@@ -1,5 +1,7 @@
 // MATHNEXUS - primeira versão de testes
 import {
+    collection,
+    addDoc,
     query,
     where,
     getDocs,
