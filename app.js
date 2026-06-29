@@ -1,15 +1,4 @@
-// MATHNEXUS - primeira versão de testes
-import {
-    collection,
-    addDoc,
-    query,
-    where,
-    getDocs,
-    onSnapshot
-}
-
-from
-"https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+import { collection, addDoc, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 
 window.salvarMissao = async function() {
