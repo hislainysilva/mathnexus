@@ -6,7 +6,7 @@ import {
     addDoc
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-async function salvarMissao() {
+window.salvarMissao = async function() {
     const campos = document.querySelectorAll(".campo");
 
     const missao = {
@@ -35,7 +35,7 @@ async function salvarMissao() {
     alert("Missão salva no Firebase com sucesso!");
 }
 
-function liberarMissao() {
+window.liberarMissao = function() {
     const missaoSalva = localStorage.getItem("missaoAtual");
 
     if (!missaoSalva) {
@@ -51,7 +51,7 @@ function liberarMissao() {
     alert("Missão liberada para os alunos!");
 }
 
-function entrarAluno() {
+window.entrarAluno = function() {
 
     const campos = document.querySelectorAll(".campo");
 
@@ -91,7 +91,7 @@ function entrarAluno() {
         "missao-aluno.html";
 }
 
-function selecionarAvatar(botao) {
+window.selecionarAvatar = function(botao) {
     document.querySelectorAll(".avatar").forEach(a => {
         a.classList.remove("ativo");
     });
@@ -100,7 +100,7 @@ function selecionarAvatar(botao) {
     localStorage.setItem("avatarAluno", botao.textContent);
 }
 
-function selecionarCor(cor) {
+window.selecionarCor = function(cor) {
     document.querySelectorAll(".cor").forEach(c => {
         c.classList.remove("ativa");
     });
@@ -108,7 +108,8 @@ function selecionarCor(cor) {
     cor.classList.add("ativa");
     localStorage.setItem("corAluno", cor.classList[1]);
 }
-function enviarResposta(){
+
+window.enviarResposta = function() {
 
     const aluno =
         JSON.parse(localStorage.getItem("alunoAtual"));
@@ -133,8 +134,8 @@ function enviarResposta(){
     alert("Resposta enviada!");
 }
 
-function gerarCodigoMissao() {
-
+window.gerarCodigoMissao = function() {
+    
     const prefixos = [
         "MATH",
         "ROB",
