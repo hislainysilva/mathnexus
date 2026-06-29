@@ -38,13 +38,14 @@
             </span>
         </div>
 
-        <input
-            type="text"
-            class="campo"
-            id="respostaAluno"
-            placeholder="Digite sua resposta"
-        >
+       <div class="alternativas" id="alternativasMissao"></div>
 
+<input
+    type="text"
+    class="campo"
+    id="respostaAluno"
+    placeholder="Digite sua resposta"
+>
         <button class="btn aluno" onclick="enviarResposta()">
             🚀 Enviar Resposta
         </button>
@@ -69,6 +70,12 @@ if(missao){
 
     document.getElementById("perguntaMissao").innerHTML =
         missao.pergunta;
+    document.getElementById("alternativasMissao").innerHTML = `
+    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaA}')">A) ${missao.alternativaA}</button>
+    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaB}')">B) ${missao.alternativaB}</button>
+    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaC}')">C) ${missao.alternativaC}</button>
+    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaD}')">D) ${missao.alternativaD}</button>
+`;
 }
 
 </script>
