@@ -2,8 +2,11 @@
 import {
     query,
     where,
-    getDocs
+    getDocs,
+    onSnapshot
 }
+from
+"https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 from
 "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
@@ -309,4 +312,78 @@ window.adicionarQuestao = function(){
 
         </div>
     `;
+}
+
+import {
+    onSnapshot
+}
+from
+"https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+
+window.abrirPainel = function(){
+
+    const codigo =
+        document
+        .getElementById(
+            "codigoPainel"
+        )
+        .value
+        .toUpperCase();
+
+    const consulta =
+        query(
+            collection(
+                db,
+                "respostas"
+            ),
+            where(
+                "codigo",
+                "==",
+                codigo
+            )
+        );
+
+    onSnapshot(
+        consulta,
+        snapshot => {
+
+            let html = "";
+
+            snapshot.forEach(
+                doc => {
+
+                    const r =
+                        doc.data();
+
+                    html += `
+                        <div class="cardQuestao">
+
+                            <h2>
+                                ${r.avatar}
+                                ${r.nome}
+                            </h2>
+
+                            <p>
+                                Turma:
+                                ${r.turma}
+                            </p>
+
+                            <p>
+                                Resposta:
+                                ${r.resposta}
+                            </p>
+
+                        </div>
+                    `;
+                }
+            );
+
+            document
+                .getElementById(
+                    "painelRespostas"
+                )
+                .innerHTML = html;
+        }
+    );
 }
