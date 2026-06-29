@@ -220,3 +220,8 @@ h1 span{
         width:100%;
     }
 }
+
+a.btn{
+    text-decoration:none;
+    display:inline-block;
+}
