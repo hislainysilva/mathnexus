@@ -4,16 +4,27 @@ function salvarMissao() {
     const campos = document.querySelectorAll(".campo");
 
     const missao = {
-        titulo: campos[0].value,
-        turma: campos[1].value,
-        tipo: campos[2].value,
-        pergunta: campos[3].value,
-        alternativaA: campos[4].value,
-        alternativaB: campos[5].value,
-        alternativaC: campos[6].value,
-        alternativaD: campos[7].value,
+        codigo: campos[0].value,
+        titulo: campos[1].value,
+        turma: campos[2].value,
+        tipo: campos[3].value,
+        pergunta: campos[4].value,
+        alternativaA: campos[5].value,
+        alternativaB: campos[6].value,
+        alternativaC: campos[7].value,
+        alternativaD: campos[8].value,
         liberada: false
     };
+
+    if (!missao.codigo) {
+        alert("Gere um código para a missão.");
+        return;
+    }
+
+    localStorage.setItem("missaoAtual", JSON.stringify(missao));
+
+    alert("Missão salva com sucesso!");
+}
 
     localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
