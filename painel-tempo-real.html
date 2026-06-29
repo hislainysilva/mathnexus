@@ -1,53 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Painel Professor</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="style.css">
+<title>MathNexus Control</title>
 
-    <script
-        type="module"
-        src="app.js">
-    </script>
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
 </head>
 
 <body>
 
-<div class="container">
+<div class="background"></div>
 
-    <div class="badge">
-        📊 PAINEL AO VIVO
-    </div>
+<main class="dashboard">
 
-    <h1>
-        Painel
-        <span>Professor</span>
-    </h1>
+    <section class="dashboard-header">
+        <div>
+            <div class="badge">📊 PAINEL AO VIVO</div>
+            <h1>Math<span>Nexus</span> Control</h1>
+            <p class="subtitle">Acompanhe as respostas dos alunos em tempo real.</p>
+        </div>
+    </section>
 
-    <p class="subtitle">
-        Acompanhamento em tempo real.
-    </p>
+    <section class="painel-busca">
+        <input
+            class="campo"
+            id="codigoPainel"
+            placeholder="Digite o código da missão"
+        >
 
-    <input
-        class="campo"
-        id="codigoPainel"
-        placeholder="Código da missão">
+        <button class="btn aluno" onclick="abrirPainel()">
+            🚀 Abrir Painel
+        </button>
+    </section>
 
-    <button
-        class="btn"
-        onclick="abrirPainel()">
+    <section class="cards-resumo">
+        <div class="resumo-card">
+            <span>👥</span>
+            <p>Participantes</p>
+            <strong id="totalParticipantes">0</strong>
+        </div>
 
-        🚀 Abrir Painel
+        <div class="resumo-card">
+            <span>✅</span>
+            <p>Respostas</p>
+            <strong id="totalRespostas">0</strong>
+        </div>
 
-    </button>
+        <div class="resumo-card">
+            <span>🚀</span>
+            <p>Status</p>
+            <strong>Ao vivo</strong>
+        </div>
+    </section>
 
-    <div id="painelRespostas">
+    <section>
+        <h2 class="secao-titulo">📡 Respostas recebidas</h2>
 
-    </div>
+        <div id="painelRespostas" class="respostas-grid">
+            <p class="subtitle">Digite o código da missão para iniciar o acompanhamento.</p>
+        </div>
+    </section>
 
-</div>
+</main>
 
 </body>
 </html>
