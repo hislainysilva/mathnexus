@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MathNexus - Missão</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="badge">
+            🚀 MISSÃO ATIVA
+        </div>
+
+        <h1>
+            <span id="tituloMissao">Carregando...</span>
+        </h1>
+
+        <p class="subtitle" id="tipoMissao">
+            Aguardando missão
+        </p>
+
+        <div class="area" style="margin-bottom:30px;">
+            <strong>Pergunta</strong>
+            <br><br>
+            <span id="perguntaMissao">
+                Nenhuma missão disponível.
+            </span>
+        </div>
+
+        <input
+            type="text"
+            class="campo"
+            id="respostaAluno"
+            placeholder="Digite sua resposta"
+        >
+
+        <button class="btn aluno" onclick="enviarResposta()">
+            🚀 Enviar Resposta
+        </button>
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+const missao = JSON.parse(localStorage.getItem("missaoAtual"));
+
+if(missao && missao.liberada){
+
+    document.getElementById("tituloMissao").innerHTML =
+        missao.titulo;
+
+    document.getElementById("tipoMissao").innerHTML =
+        missao.tipo;
+
+    document.getElementById("perguntaMissao").innerHTML =
+        missao.pergunta;
+}
+
+</script>
+
+</body>
+</html>
