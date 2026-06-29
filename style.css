@@ -273,3 +273,23 @@ textarea{
     color:white;
     box-shadow:0 0 20px rgba(0,168,255,.7);
 }
+
+.cardQuestao{
+    margin-top:30px;
+    padding:25px;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px;
+}
+
+.cardQuestao h2{
+    color:white;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+.perguntaQuestao{
+    min-height:120px;
+    resize:vertical;
+}
+
