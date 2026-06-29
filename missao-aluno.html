@@ -44,11 +44,13 @@
     type="text"
     class="campo"
     id="respostaAluno"
-    placeholder="Digite sua resposta"
+    placeholder="Resposta selecionada"
+    readonly
 >
-        <button class="btn aluno" onclick="enviarResposta()">
-            🚀 Enviar Resposta
-        </button>
+
+<button class="btn aluno" onclick="proximaQuestao()">
+    ➡️ Próxima Questão
+</button>
 
     </div>
 
@@ -57,27 +59,62 @@
 <script type="module" src="app.js"></script>
 
 <script>
+let indiceQuestao = 0;
+let respostasAluno = [];
 
 const missao = JSON.parse(localStorage.getItem("missaoAtual"));
 
-if(missao){
+function carregarQuestao() {
+    if (!missao || !missao.questoes || missao.questoes.length === 0) {
+        document.getElementById("tituloMissao").innerHTML = "Nenhuma missão";
+        document.getElementById("perguntaMissao").innerHTML = "Nenhuma questão disponível.";
+        return;
+    }
 
-    document.getElementById("tituloMissao").innerHTML =
-        missao.titulo;
+    const questao = missao.questoes[indiceQuestao];
 
+    document.getElementById("tituloMissao").innerHTML = missao.titulo;
     document.getElementById("tipoMissao").innerHTML =
-        missao.tipo;
+        `Questão ${indiceQuestao + 1} de ${missao.questoes.length}`;
 
-    document.getElementById("perguntaMissao").innerHTML =
-        missao.pergunta;
+    document.getElementById("perguntaMissao").innerHTML = questao.pergunta;
+
     document.getElementById("alternativasMissao").innerHTML = `
-    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaA}')">A) ${missao.alternativaA}</button>
-    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaB}')">B) ${missao.alternativaB}</button>
-    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaC}')">C) ${missao.alternativaC}</button>
-    <button class="alternativa" onclick="selecionarResposta('${missao.alternativaD}')">D) ${missao.alternativaD}</button>
-`;
+        <button class="alternativa" onclick="selecionarResposta('${questao.A}')">A) ${questao.A}</button>
+        <button class="alternativa" onclick="selecionarResposta('${questao.B}')">B) ${questao.B}</button>
+        <button class="alternativa" onclick="selecionarResposta('${questao.C}')">C) ${questao.C}</button>
+        <button class="alternativa" onclick="selecionarResposta('${questao.D}')">D) ${questao.D}</button>
+    `;
+
+    document.getElementById("respostaAluno").value = "";
 }
 
+carregarQuestao();
+
+window.proximaQuestao = function() {
+    const resposta = document.getElementById("respostaAluno").value;
+
+    if (!resposta) {
+        alert("Escolha uma resposta antes de continuar.");
+        return;
+    }
+
+    respostasAluno.push({
+        questao: indiceQuestao + 1,
+        pergunta: missao.questoes[indiceQuestao].pergunta,
+        resposta: resposta
+    });
+
+    indiceQuestao++;
+
+    if (indiceQuestao >= missao.questoes.length) {
+        localStorage.setItem("respostasMissao", JSON.stringify(respostasAluno));
+        enviarResposta();
+        return;
+    }
+
+    carregarQuestao();
+}
 </script>
 
 </body>
