@@ -42,11 +42,12 @@ window.salvarMissao = async function() {
     alert("Missão salva no Firebase com sucesso!");
 }
 
-window.liberarMissao = function() {
+window.liberarMissao = async function() {
+
     const missaoSalva = localStorage.getItem("missaoAtual");
 
     if (!missaoSalva) {
-        alert("Crie uma missão antes de liberar.");
+        alert("Crie e salve uma missão antes de liberar.");
         return;
     }
 
@@ -55,9 +56,8 @@ window.liberarMissao = function() {
 
     localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
-    alert("Missão liberada para os alunos!");
+    alert("Missão liberada!");
 }
-
 window.entrarAluno = async function() {
 
     const campos =
