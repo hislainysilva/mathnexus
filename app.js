@@ -244,3 +244,46 @@ window.selecionarResposta = function(resposta){
         )
         .value = resposta;
 }
+
+let contadorQuestoes = 1;
+
+window.adicionarQuestao = function(){
+
+    contadorQuestoes++;
+
+    document
+        .getElementById(
+            "listaQuestoes"
+        )
+        .innerHTML += `
+
+        <div class="cardQuestao">
+
+            <h3>
+                Questão ${contadorQuestoes}
+            </h3>
+
+            <textarea
+                class="perguntaQuestao"
+                placeholder="Digite a pergunta">
+            </textarea>
+
+            <input
+                class="altA"
+                placeholder="Alternativa A">
+
+            <input
+                class="altB"
+                placeholder="Alternativa B">
+
+            <input
+                class="altC"
+                placeholder="Alternativa C">
+
+            <input
+                class="altD"
+                placeholder="Alternativa D">
+
+        </div>
+    `;
+}
