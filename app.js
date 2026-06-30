@@ -28,10 +28,7 @@ window.adicionarQuestao = function() {
         <div class="cardQuestao">
             <h2>Questão ${contadorQuestoes}</h2>
 
-            <textarea
-                class="campo perguntaQuestao"
-                placeholder="Digite a pergunta"
-                rows="4"></textarea>
+            <textarea class="campo perguntaQuestao" placeholder="Digite a pergunta" rows="4"></textarea>
 
             <input type="text" class="campo altA" placeholder="Alternativa A">
             <input type="text" class="campo altB" placeholder="Alternativa B">
@@ -102,6 +99,11 @@ window.salvarMissao = async function() {
 
     if (!titulo) {
         alert("Digite o título da missão.");
+        return;
+    }
+
+    if (questoes.some(q => !q.pergunta || !q.A || !q.B || !q.C || !q.D || !q.correta)) {
+        alert("Preencha todas as perguntas, alternativas e o gabarito.");
         return;
     }
 
@@ -187,13 +189,15 @@ window.selecionarCor = function(cor) {
     localStorage.setItem("corAluno", cor.classList[1]);
 };
 
-window.selecionarResposta = function(resposta) {
+window.selecionarResposta = function(resposta, alternativa) {
     document.querySelectorAll(".alternativa").forEach(botao => {
         botao.classList.remove("selecionada");
     });
 
     event.target.classList.add("selecionada");
+
     document.getElementById("respostaAluno").value = resposta;
+    localStorage.setItem("alternativaAtual", alternativa);
 };
 
 window.enviarResposta = async function() {
@@ -249,6 +253,7 @@ window.enviarResposta = async function() {
     });
 
     localStorage.removeItem("respostasMissao");
+    localStorage.removeItem("alternativaAtual");
 
     alert(`Missão concluída! Nota: ${nota}`);
 };
@@ -279,7 +284,6 @@ window.abrirPainel = function() {
 
     onSnapshot(consulta, snapshot => {
         let html = "";
-
         const alunosUnicos = {};
 
         snapshot.forEach(doc => {
