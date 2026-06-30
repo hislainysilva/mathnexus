@@ -24,7 +24,8 @@ let contadorQuestoes = 1;
 window.adicionarQuestao = function() {
     contadorQuestoes++;
 
-    document.getElementById("listaQuestoes").innerHTML += `
+    document.getElementById("listaQuestoes").inner
+       HTML += `
         <div class="cardQuestao">
             <h2>Questão ${contadorQuestoes}</h2>
 
@@ -262,14 +263,29 @@ window.abrirPainel = function() {
                 respostaTexto = `<p><strong>Resposta:</strong> ${r.resposta}</p>`;
             }
 
-            html += `
-                <div class="aluno-card">
-                    <h2>${r.avatar} ${r.nome}</h2>
-                    <p><strong>Turma:</strong> ${r.turma}</p>
-                    <p><strong>Missão:</strong> ${r.tituloMissao}</p>
-                    ${respostaTexto}
-                </div>
-            `;
+           html += `
+    <div class="cardResposta">
+
+        <div class="avatarPainel">
+            ${r.avatar}
+        </div>
+
+        <h2>${r.nome}</h2>
+
+        <div class="turmaPainel">
+            ${r.turma}
+        </div>
+
+        <div class="missaoPainel">
+            ${r.tituloMissao}
+        </div>
+
+        <div class="respostaPainel">
+            ${r.resposta}
+        </div>
+
+    </div>
+`;
         });
 
         document.getElementById("painelRespostas").innerHTML = html;
