@@ -46,51 +46,90 @@ window.adicionarQuestao = function() {
 };
 
 window.salvarMissao = async function() {
-    const campos = document.querySelectorAll(".campo");
+
+    const codigo =
+        document.getElementById("codigoMissao").value;
+
+    const titulo =
+        document.getElementById("tituloMissaoCriar").value;
+
+    const turma =
+        document.getElementById("turmaMissaoCriar").value;
+
+    const tipo =
+        document.getElementById("tipoMissaoCriar").value;
+
     const questoes = [];
 
+    // Questão principal
     questoes.push({
         numero: 1,
-        pergunta: campos[4].value,
-        A: campos[5].value,
-        B: campos[6].value,
-        C: campos[7].value,
-        D: campos[8].value
+        pergunta:
+            document.getElementById("perguntaPrincipal").value,
+        A:
+            document.getElementById("alternativaA").value,
+        B:
+            document.getElementById("alternativaB").value,
+        C:
+            document.getElementById("alternativaC").value,
+        D:
+            document.getElementById("alternativaD").value
     });
 
-    document.querySelectorAll(".cardQuestao").forEach((card, index) => {
-        questoes.push({
-            numero: index + 2,
-            pergunta: card.querySelector(".perguntaQuestao").value,
-            A: card.querySelector(".altA").value,
-            B: card.querySelector(".altB").value,
-            C: card.querySelector(".altC").value,
-            D: card.querySelector(".altD").value
+    // Questões adicionadas dinamicamente
+    document
+        .querySelectorAll(".cardQuestao")
+        .forEach((card, index) => {
+
+            if(index === 0) return;
+
+            questoes.push({
+                numero: index + 1,
+                pergunta:
+                    card.querySelector(".perguntaQuestao").value,
+                A:
+                    card.querySelector(".altA").value,
+                B:
+                    card.querySelector(".altB").value,
+                C:
+                    card.querySelector(".altC").value,
+                D:
+                    card.querySelector(".altD").value
+            });
         });
-    });
 
     const missao = {
-        codigo: campos[0].value,
-        titulo: campos[1].value,
-        turma: campos[2].value,
-        tipo: campos[3].value,
-        questoes: questoes,
+        codigo,
+        titulo,
+        turma,
+        tipo,
+        questoes,
         liberada: true,
         criadaEm: new Date()
     };
 
-    if (!missao.codigo) {
+    if(!codigo){
         alert("Gere um código para a missão.");
         return;
     }
 
-    await addDoc(collection(db, "missoes"), missao);
+    if(!titulo){
+        alert("Digite o título da missão.");
+        return;
+    }
 
-    localStorage.setItem("missaoAtual", JSON.stringify(missao));
+    await addDoc(
+        collection(db, "missoes"),
+        missao
+    );
 
-    alert("Missão com várias questões salva com sucesso!");
+    localStorage.setItem(
+        "missaoAtual",
+        JSON.stringify(missao)
+    );
+
+    alert("Missão salva com sucesso!");
 };
-
 window.liberarMissao = function() {
     const missaoSalva = localStorage.getItem("missaoAtual");
 
