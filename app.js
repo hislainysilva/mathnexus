@@ -31,30 +31,14 @@ window.adicionarQuestao = function() {
 
     const novaQuestao = `
         <div class="cardQuestao">
-
             <h2>Questão ${contadorQuestoes}</h2>
 
-            <textarea
-                class="campo perguntaQuestao"
-                placeholder="Digite a pergunta"
-                rows="4"></textarea>
+            <textarea class="campo perguntaQuestao" placeholder="Digite a pergunta" rows="4"></textarea>
 
-            <input type="text"
-                   class="campo altA"
-                   placeholder="Alternativa A">
-
-            <input type="text"
-                   class="campo altB"
-                   placeholder="Alternativa B">
-
-            <input type="text"
-                   class="campo altC"
-                   placeholder="Alternativa C">
-
-            <input type="text"
-                   class="campo altD"
-                   placeholder="Alternativa D">
-
+            <input type="text" class="campo altA" placeholder="Alternativa A">
+            <input type="text" class="campo altB" placeholder="Alternativa B">
+            <input type="text" class="campo altC" placeholder="Alternativa C">
+            <input type="text" class="campo altD" placeholder="Alternativa D">
         </div>
     `;
 
