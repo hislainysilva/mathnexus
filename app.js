@@ -248,45 +248,64 @@ window.abrirPainel = function() {
             `;
         }
 
-        snapshot.forEach(doc => {
-            const r = doc.data();
+        const alunosUnicos = {};
 
-            let respostaTexto = "";
+snapshot.forEach(doc => {
+    const r = doc.data();
 
-            if (Array.isArray(r.resposta)) {
-                respostaTexto = r.resposta
-                    .map(item => {
-                        return `<p><strong>Questão ${item.questao}:</strong> ${item.resposta}</p>`;
-                    })
-                    .join("");
-            } else {
-                respostaTexto = `<p><strong>Resposta:</strong> ${r.resposta}</p>`;
-            }
+    const chave = `${r.nome}_${r.turma}`.toLowerCase();
 
-           html += `
-    <div class="cardResposta">
+    alunosUnicos[chave] = r;
+});
 
-        <div class="avatarPainel">
-            ${r.avatar}
+const listaAlunos = Object.values(alunosUnicos);
+
+document.getElementById("totalParticipantes").innerHTML =
+    listaAlunos.length;
+
+document.getElementById("totalRespostas").innerHTML =
+    snapshot.size;
+
+listaAlunos.forEach(r => {
+
+    let respostaTexto = "";
+
+    if (Array.isArray(r.resposta)) {
+        respostaTexto = r.resposta
+            .map(item => {
+                return `<p><strong>Questão ${item.questao}:</strong> ${item.resposta}</p>`;
+            })
+            .join("");
+    } else {
+        respostaTexto = `
+            <div class="respostaPainel">
+                ${r.resposta}
+            </div>
+        `;
+    }
+
+    html += `
+        <div class="cardResposta">
+
+            <div class="avatarPainel">
+                ${r.avatar}
+            </div>
+
+            <h2>${r.nome}</h2>
+
+            <div class="turmaPainel">
+                ${r.turma}
+            </div>
+
+            <div class="missaoPainel">
+                ${r.tituloMissao}
+            </div>
+
+            ${respostaTexto}
+
         </div>
-
-        <h2>${r.nome}</h2>
-
-        <div class="turmaPainel">
-            ${r.turma}
-        </div>
-
-        <div class="missaoPainel">
-            ${r.tituloMissao}
-        </div>
-
-        <div class="respostaPainel">
-            ${r.resposta}
-        </div>
-
-    </div>
-`;
-        });
+    `;
+});
 
         document.getElementById("painelRespostas").innerHTML = html;
     });
