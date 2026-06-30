@@ -37,6 +37,14 @@ window.adicionarQuestao = function() {
             <input type="text" class="campo altB" placeholder="Alternativa B">
             <input type="text" class="campo altC" placeholder="Alternativa C">
             <input type="text" class="campo altD" placeholder="Alternativa D">
+
+            <select class="campo gabaritoQuestao">
+                <option value="">Resposta correta</option>
+                <option value="A">Alternativa A</option>
+                <option value="B">Alternativa B</option>
+                <option value="C">Alternativa C</option>
+                <option value="D">Alternativa D</option>
+            </select>
         </div>
     `;
 
@@ -46,57 +54,36 @@ window.adicionarQuestao = function() {
 };
 
 window.salvarMissao = async function() {
-
-    const codigo =
-        document.getElementById("codigoMissao").value;
-
-    const titulo =
-        document.getElementById("tituloMissaoCriar").value;
-
-    const turma =
-        document.getElementById("turmaMissaoCriar").value;
-
-    const tipo =
-        document.getElementById("tipoMissaoCriar").value;
+    const codigo = document.getElementById("codigoMissao").value;
+    const titulo = document.getElementById("tituloMissaoCriar").value;
+    const turma = document.getElementById("turmaMissaoCriar").value;
+    const tipo = document.getElementById("tipoMissaoCriar").value;
 
     const questoes = [];
 
-    // Questão principal
     questoes.push({
         numero: 1,
-        pergunta:
-            document.getElementById("perguntaPrincipal").value,
-        A:
-            document.getElementById("alternativaA").value,
-        B:
-            document.getElementById("alternativaB").value,
-        C:
-            document.getElementById("alternativaC").value,
-        D:
-            document.getElementById("alternativaD").value
+        pergunta: document.getElementById("perguntaPrincipal").value,
+        A: document.getElementById("alternativaA").value,
+        B: document.getElementById("alternativaB").value,
+        C: document.getElementById("alternativaC").value,
+        D: document.getElementById("alternativaD").value,
+        correta: document.getElementById("gabaritoPrincipal").value
     });
 
-    // Questões adicionadas dinamicamente
-    document
-        .querySelectorAll(".cardQuestao")
-        .forEach((card, index) => {
+    document.querySelectorAll(".cardQuestao").forEach((card, index) => {
+        if (index === 0) return;
 
-            if(index === 0) return;
-
-            questoes.push({
-                numero: index + 1,
-                pergunta:
-                    card.querySelector(".perguntaQuestao").value,
-                A:
-                    card.querySelector(".altA").value,
-                B:
-                    card.querySelector(".altB").value,
-                C:
-                    card.querySelector(".altC").value,
-                D:
-                    card.querySelector(".altD").value
-            });
+        questoes.push({
+            numero: index + 1,
+            pergunta: card.querySelector(".perguntaQuestao").value,
+            A: card.querySelector(".altA").value,
+            B: card.querySelector(".altB").value,
+            C: card.querySelector(".altC").value,
+            D: card.querySelector(".altD").value,
+            correta: card.querySelector(".gabaritoQuestao").value
         });
+    });
 
     const missao = {
         codigo,
@@ -108,28 +95,23 @@ window.salvarMissao = async function() {
         criadaEm: new Date()
     };
 
-    if(!codigo){
+    if (!codigo) {
         alert("Gere um código para a missão.");
         return;
     }
 
-    if(!titulo){
+    if (!titulo) {
         alert("Digite o título da missão.");
         return;
     }
 
-    await addDoc(
-        collection(db, "missoes"),
-        missao
-    );
+    await addDoc(collection(db, "missoes"), missao);
 
-    localStorage.setItem(
-        "missaoAtual",
-        JSON.stringify(missao)
-    );
+    localStorage.setItem("missaoAtual", JSON.stringify(missao));
 
     alert("Missão salva com sucesso!");
 };
+
 window.liberarMissao = function() {
     const missaoSalva = localStorage.getItem("missaoAtual");
 
@@ -211,7 +193,6 @@ window.selecionarResposta = function(resposta) {
     });
 
     event.target.classList.add("selecionada");
-
     document.getElementById("respostaAluno").value = resposta;
 };
 
@@ -227,6 +208,31 @@ window.enviarResposta = async function() {
         return;
     }
 
+    let acertos = 0;
+
+    const respostasCorrigidas = respostasMissao.map(item => {
+        const questao = missao.questoes[item.questao - 1];
+
+        const acertou = item.alternativa === questao.correta;
+
+        if (acertou) {
+            acertos++;
+        }
+
+        return {
+            questao: item.questao,
+            pergunta: item.pergunta,
+            resposta: item.resposta,
+            alternativa: item.alternativa,
+            correta: questao.correta,
+            acertou: acertou
+        };
+    });
+
+    const total = missao.questoes.length;
+    const nota = Number(((acertos / total) * 10).toFixed(1));
+    const percentual = Math.round((acertos / total) * 100);
+
     await addDoc(collection(db, "respostas"), {
         nome: aluno.nome,
         turma: aluno.turma,
@@ -234,13 +240,17 @@ window.enviarResposta = async function() {
         cor: aluno.cor,
         codigo: aluno.codigo,
         tituloMissao: missao.titulo,
-        resposta: respostasMissao,
+        resposta: respostasCorrigidas,
+        acertos,
+        total,
+        nota,
+        percentual,
         enviadaEm: new Date()
     });
 
     localStorage.removeItem("respostasMissao");
 
-    alert("Missão concluída! Respostas enviadas com sucesso.");
+    alert(`Missão concluída! Nota: ${nota}`);
 };
 
 /* =========================
@@ -278,7 +288,8 @@ window.abrirPainel = function() {
             alunosUnicos[chave] = r;
         });
 
-        const listaAlunos = Object.values(alunosUnicos);
+        const listaAlunos = Object.values(alunosUnicos)
+            .sort((a, b) => (b.nota || 0) - (a.nota || 0));
 
         document.getElementById("totalParticipantes").innerHTML =
             listaAlunos.length;
@@ -294,33 +305,36 @@ window.abrirPainel = function() {
             `;
         }
 
-        listaAlunos.forEach(r => {
+        listaAlunos.forEach((r, index) => {
+            let medalha = "";
+
+            if (index === 0) medalha = "🥇";
+            if (index === 1) medalha = "🥈";
+            if (index === 2) medalha = "🥉";
+
             let respostaTexto = "";
 
             if (Array.isArray(r.resposta)) {
                 respostaTexto = r.resposta
                     .map(item => {
+                        const icone = item.acertou ? "✅" : "❌";
+
                         return `
                             <p>
+                                ${icone}
                                 <strong>Questão ${item.questao}:</strong>
                                 ${item.resposta}
                             </p>
                         `;
                     })
                     .join("");
-            } else {
-                respostaTexto = `
-                    <div class="respostaPainel">
-                        ${r.resposta}
-                    </div>
-                `;
             }
 
             html += `
                 <div class="cardResposta">
 
                     <div class="avatarPainel">
-                        ${r.avatar}
+                        ${medalha} ${r.avatar}
                     </div>
 
                     <h2>${r.nome}</h2>
@@ -332,6 +346,20 @@ window.abrirPainel = function() {
                     <div class="missaoPainel">
                         ${r.tituloMissao}
                     </div>
+
+                    <div class="respostaPainel">
+                        Nota: ${r.nota ?? "-"}
+                    </div>
+
+                    <p>
+                        <strong>Acertos:</strong>
+                        ${r.acertos ?? 0}/${r.total ?? 0}
+                    </p>
+
+                    <p>
+                        <strong>Percentual:</strong>
+                        ${r.percentual ?? 0}%
+                    </p>
 
                     ${respostaTexto}
 
