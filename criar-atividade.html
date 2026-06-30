@@ -7,7 +7,6 @@
 <title>Criar Missão - MathNexus</title>
 
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -26,42 +25,34 @@
             Criar<span>Atividade</span>
         </h1>
 
-        <div id="listaQuestoes">
-
-</div>
-
-<button
-    class="btn"
-    onclick="adicionarQuestao()">
-
-    ➕ Adicionar Questão
-
-</button>
-        
         <p class="subtitle">
             Configure o próximo desafio dos seus alunos.
         </p>
-<input
-    type="text"
-    class="campo"
-    id="codigoMissao"
-    placeholder="Código da missão"
-    readonly
->
 
-<button class="btn aluno" onclick="gerarCodigoMissao()">
-    🔑 Gerar Código
-</button>
-     <div class="area" id="codigoGerado" style="margin-top:20px;">
-    Nenhum código gerado
-</div>
         <input
             type="text"
             class="campo"
+            id="codigoMissao"
+            placeholder="Código da missão"
+            readonly
+        >
+
+        <button class="btn aluno" onclick="gerarCodigoMissao()">
+            🔑 Gerar Código
+        </button>
+
+        <div class="area" id="codigoGerado" style="margin-top:20px;">
+            Nenhum código gerado
+        </div>
+
+        <input
+            type="text"
+            class="campo"
+            id="tituloMissaoCriar"
             placeholder="Título da missão"
         >
 
-        <select class="campo">
+        <select class="campo" id="turmaMissaoCriar">
             <option>Selecione a turma</option>
             <option>6º Ano</option>
             <option>7º Ano</option>
@@ -69,7 +60,7 @@
             <option>9º Ano</option>
         </select>
 
-        <select class="campo">
+        <select class="campo" id="tipoMissaoCriar">
             <option>Tipo de atividade</option>
             <option>Múltipla escolha</option>
             <option>Resposta curta</option>
@@ -78,47 +69,66 @@
             <option>Prática experimental</option>
         </select>
 
-        <textarea
-            class="campo"
-            rows="5"
-            placeholder="Digite a pergunta ou descrição da atividade"
-        ></textarea>
+        <div class="cardQuestao">
 
-        <input
-            type="text"
-            class="campo"
-            placeholder="Alternativa A"
-        >
+            <h2>Questão 1</h2>
 
-        <input
-            type="text"
-            class="campo"
-            placeholder="Alternativa B"
-        >
+            <textarea
+                class="campo perguntaQuestao"
+                id="perguntaPrincipal"
+                rows="5"
+                placeholder="Digite a pergunta ou descrição da atividade"
+            ></textarea>
 
-        <input
-            type="text"
-            class="campo"
-            placeholder="Alternativa C"
-        >
+            <input
+                type="text"
+                class="campo altA"
+                id="alternativaA"
+                placeholder="Alternativa A"
+            >
 
-        <input
-            type="text"
-            class="campo"
-            placeholder="Alternativa D"
-        >
+            <input
+                type="text"
+                class="campo altB"
+                id="alternativaB"
+                placeholder="Alternativa B"
+            >
 
-       <button class="btn aluno" onclick="salvarMissao()">
-    💾 Salvar Missão
-</button>
+            <input
+                type="text"
+                class="campo altC"
+                id="alternativaC"
+                placeholder="Alternativa C"
+            >
+
+            <input
+                type="text"
+                class="campo altD"
+                id="alternativaD"
+                placeholder="Alternativa D"
+            >
+
+        </div>
+
+        <div id="listaQuestoes"></div>
+
+        <button class="btn aluno" onclick="adicionarQuestao()">
+            ➕ Adicionar Questão
+        </button>
+
+        <button class="btn aluno" onclick="salvarMissao()">
+            💾 Salvar Missão
+        </button>
 
         <button class="btn professor" onclick="liberarMissao()">
-    🚀 Liberar Missão
-</button>
+            🚀 Liberar Missão
+        </button>
 
     </div>
 
 </div>
+
 <script type="module" src="app.js"></script>
+
 </body>
 </html>
