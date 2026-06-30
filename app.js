@@ -22,10 +22,13 @@ window.gerarCodigoMissao = function() {
 let contadorQuestoes = 1;
 
 window.adicionarQuestao = function() {
+
     contadorQuestoes++;
 
     document.getElementById("listaQuestoes").innerHTML += `
+
         <div class="cardQuestao">
+
             <h2>Questão ${contadorQuestoes}</h2>
 
             <textarea
@@ -33,11 +36,24 @@ window.adicionarQuestao = function() {
                 placeholder="Digite a pergunta"
                 rows="4"></textarea>
 
-            <input type="text" class="campo altA" placeholder="Alternativa A">
-            <input type="text" class="campo altB" placeholder="Alternativa B">
-            <input type="text" class="campo altC" placeholder="Alternativa C">
-            <input type="text" class="campo altD" placeholder="Alternativa D">
+            <input type="text"
+                   class="campo altA"
+                   placeholder="Alternativa A">
+
+            <input type="text"
+                   class="campo altB"
+                   placeholder="Alternativa B">
+
+            <input type="text"
+                   class="campo altC"
+                   placeholder="Alternativa C">
+
+            <input type="text"
+                   class="campo altD"
+                   placeholder="Alternativa D">
+
         </div>
+
     `;
 };
 
