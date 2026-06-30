@@ -7,7 +7,6 @@
 <title>MathNexus - Missão</title>
 
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -38,19 +37,19 @@
             </span>
         </div>
 
-       <div class="alternativas" id="alternativasMissao"></div>
+        <div class="alternativas" id="alternativasMissao"></div>
 
-<input
-    type="text"
-    class="campo"
-    id="respostaAluno"
-    placeholder="Resposta selecionada"
-    readonly
->
+        <input
+            type="text"
+            class="campo"
+            id="respostaAluno"
+            placeholder="Resposta selecionada"
+            readonly
+        >
 
-<button class="btn aluno" onclick="proximaQuestao()">
-    ➡️ Próxima Questão
-</button>
+        <button class="btn aluno" id="btnProxima" onclick="proximaQuestao()">
+            ➡️ Próxima Questão
+        </button>
 
     </div>
 
@@ -74,27 +73,36 @@ function carregarQuestao() {
     const questao = missao.questoes[indiceQuestao];
 
     document.getElementById("tituloMissao").innerHTML = missao.titulo;
+
     document.getElementById("tipoMissao").innerHTML =
         `Questão ${indiceQuestao + 1} de ${missao.questoes.length}`;
 
     document.getElementById("perguntaMissao").innerHTML = questao.pergunta;
 
     document.getElementById("alternativasMissao").innerHTML = `
-        <button class="alternativa" onclick="selecionarResposta('${questao.A}')">A) ${questao.A}</button>
-        <button class="alternativa" onclick="selecionarResposta('${questao.B}')">B) ${questao.B}</button>
-        <button class="alternativa" onclick="selecionarResposta('${questao.C}')">C) ${questao.C}</button>
-        <button class="alternativa" onclick="selecionarResposta('${questao.D}')">D) ${questao.D}</button>
+        <button class="alternativa" onclick="selecionarResposta('${questao.A}', 'A')">A) ${questao.A}</button>
+        <button class="alternativa" onclick="selecionarResposta('${questao.B}', 'B')">B) ${questao.B}</button>
+        <button class="alternativa" onclick="selecionarResposta('${questao.C}', 'C')">C) ${questao.C}</button>
+        <button class="alternativa" onclick="selecionarResposta('${questao.D}', 'D')">D) ${questao.D}</button>
     `;
 
     document.getElementById("respostaAluno").value = "";
+    localStorage.removeItem("alternativaAtual");
+
+    if (indiceQuestao === missao.questoes.length - 1) {
+        document.getElementById("btnProxima").innerHTML = "✅ Finalizar Missão";
+    } else {
+        document.getElementById("btnProxima").innerHTML = "➡️ Próxima Questão";
+    }
 }
 
 carregarQuestao();
 
 window.proximaQuestao = function() {
     const resposta = document.getElementById("respostaAluno").value;
+    const alternativa = localStorage.getItem("alternativaAtual");
 
-    if (!resposta) {
+    if (!resposta || !alternativa) {
         alert("Escolha uma resposta antes de continuar.");
         return;
     }
@@ -102,7 +110,8 @@ window.proximaQuestao = function() {
     respostasAluno.push({
         questao: indiceQuestao + 1,
         pergunta: missao.questoes[indiceQuestao].pergunta,
-        resposta: resposta
+        resposta: resposta,
+        alternativa: alternativa
     });
 
     indiceQuestao++;
