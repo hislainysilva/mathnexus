@@ -182,15 +182,8 @@ window.enviarResposta = async function() {
     const respostasMissao =
         JSON.parse(localStorage.getItem("respostasMissao")) || [];
 
-    const respostaCampo = document.getElementById("respostaAluno");
-
-    const respostaFinal =
-        respostasMissao.length > 0
-            ? respostasMissao
-            : respostaCampo.value;
-
-    if (!respostaFinal || respostaFinal.length === 0) {
-        alert("Escolha ou digite uma resposta.");
+    if (respostasMissao.length === 0) {
+        alert("Nenhuma resposta encontrada.");
         return;
     }
 
@@ -201,13 +194,13 @@ window.enviarResposta = async function() {
         cor: aluno.cor,
         codigo: aluno.codigo,
         tituloMissao: missao.titulo,
-        resposta: respostaFinal,
+        resposta: respostasMissao,
         enviadaEm: new Date()
     });
 
     localStorage.removeItem("respostasMissao");
 
-    alert("Resposta enviada com sucesso!");
+    alert("Missão concluída! Respostas enviadas com sucesso.");
 };
 
 /* =========================
