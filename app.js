@@ -22,18 +22,16 @@ window.gerarCodigoMissao = function() {
 let contadorQuestoes = 1;
 
 window.adicionarQuestao = function() {
-
-    let contadorQuestoes = 1;
-
-window.adicionarQuestao = function() {
-
     contadorQuestoes++;
 
     const novaQuestao = `
         <div class="cardQuestao">
             <h2>Questão ${contadorQuestoes}</h2>
 
-            <textarea class="campo perguntaQuestao" placeholder="Digite a pergunta" rows="4"></textarea>
+            <textarea
+                class="campo perguntaQuestao"
+                placeholder="Digite a pergunta"
+                rows="4"></textarea>
 
             <input type="text" class="campo altA" placeholder="Alternativa A">
             <input type="text" class="campo altB" placeholder="Alternativa B">
@@ -49,7 +47,6 @@ window.adicionarQuestao = function() {
 
 window.salvarMissao = async function() {
     const campos = document.querySelectorAll(".campo");
-
     const questoes = [];
 
     questoes.push({
@@ -116,7 +113,6 @@ window.liberarMissao = function() {
 
 window.entrarAluno = async function() {
     const campos = document.querySelectorAll(".campo");
-
     const codigo = campos[2].value.toUpperCase();
 
     const aluno = {
@@ -235,10 +231,23 @@ window.abrirPainel = function() {
     onSnapshot(consulta, snapshot => {
         let html = "";
 
-        document.getElementById("totalParticipantes").innerHTML = snapshot.size;
-        document.getElementById("totalRespostas").innerHTML = snapshot.size;
+        const alunosUnicos = {};
 
-        if (snapshot.empty) {
+        snapshot.forEach(doc => {
+            const r = doc.data();
+            const chave = `${r.nome}_${r.turma}`.toLowerCase();
+            alunosUnicos[chave] = r;
+        });
+
+        const listaAlunos = Object.values(alunosUnicos);
+
+        document.getElementById("totalParticipantes").innerHTML =
+            listaAlunos.length;
+
+        document.getElementById("totalRespostas").innerHTML =
+            snapshot.size;
+
+        if (listaAlunos.length === 0) {
             html = `
                 <p class="subtitle">
                     Nenhuma resposta recebida ainda.
@@ -246,64 +255,50 @@ window.abrirPainel = function() {
             `;
         }
 
-        const alunosUnicos = {};
+        listaAlunos.forEach(r => {
+            let respostaTexto = "";
 
-snapshot.forEach(doc => {
-    const r = doc.data();
+            if (Array.isArray(r.resposta)) {
+                respostaTexto = r.resposta
+                    .map(item => {
+                        return `
+                            <p>
+                                <strong>Questão ${item.questao}:</strong>
+                                ${item.resposta}
+                            </p>
+                        `;
+                    })
+                    .join("");
+            } else {
+                respostaTexto = `
+                    <div class="respostaPainel">
+                        ${r.resposta}
+                    </div>
+                `;
+            }
 
-    const chave = `${r.nome}_${r.turma}`.toLowerCase();
+            html += `
+                <div class="cardResposta">
 
-    alunosUnicos[chave] = r;
-});
+                    <div class="avatarPainel">
+                        ${r.avatar}
+                    </div>
 
-const listaAlunos = Object.values(alunosUnicos);
+                    <h2>${r.nome}</h2>
 
-document.getElementById("totalParticipantes").innerHTML =
-    listaAlunos.length;
+                    <div class="turmaPainel">
+                        ${r.turma}
+                    </div>
 
-document.getElementById("totalRespostas").innerHTML =
-    snapshot.size;
+                    <div class="missaoPainel">
+                        ${r.tituloMissao}
+                    </div>
 
-listaAlunos.forEach(r => {
+                    ${respostaTexto}
 
-    let respostaTexto = "";
-
-    if (Array.isArray(r.resposta)) {
-        respostaTexto = r.resposta
-            .map(item => {
-                return `<p><strong>Questão ${item.questao}:</strong> ${item.resposta}</p>`;
-            })
-            .join("");
-    } else {
-        respostaTexto = `
-            <div class="respostaPainel">
-                ${r.resposta}
-            </div>
-        `;
-    }
-
-    html += `
-        <div class="cardResposta">
-
-            <div class="avatarPainel">
-                ${r.avatar}
-            </div>
-
-            <h2>${r.nome}</h2>
-
-            <div class="turmaPainel">
-                ${r.turma}
-            </div>
-
-            <div class="missaoPainel">
-                ${r.tituloMissao}
-            </div>
-
-            ${respostaTexto}
-
-        </div>
-    `;
-});
+                </div>
+            `;
+        });
 
         document.getElementById("painelRespostas").innerHTML = html;
     });
