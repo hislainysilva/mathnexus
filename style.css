@@ -332,10 +332,17 @@ textarea{
     background:rgba(20,20,20,.9);
     border:1px solid rgba(255,255,255,.08);
     border-radius:22px;
-    padding:25px;
-    box-shadow:0 0 25px rgba(0,168,255,.12);
-}
 
+    padding:18px;
+    min-height:120px;
+
+    box-shadow:
+        0 0 25px rgba(0,168,255,.12);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
 .resumo-card span{
     font-size:34px;
 }
