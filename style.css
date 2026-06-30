@@ -403,3 +403,55 @@ textarea{
         grid-template-columns:1fr;
     }
 }
+
+/* ===== CARDS DE RESPOSTAS ===== */
+
+#painelRespostas{
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(280px, 1fr));
+
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.cardResposta{
+    background: rgba(20,20,20,.9);
+    border: 1px solid rgba(0,170,255,.25);
+    border-radius: 20px;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    transition: .3s;
+}
+
+.cardResposta:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0,170,255,.4);
+}
+
+.avatarPainel{
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.cardResposta h2{
+    color: white;
+    margin: 0;
+}
+
+.turmaPainel{
+    color: #888;
+    margin-top: 8px;
+}
+
+.respostaPainel{
+    margin-top: 20px;
+    font-size: 34px;
+    font-weight: bold;
+    color: #00aaff;
+}
