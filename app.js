@@ -26,7 +26,6 @@ window.adicionarQuestao = function() {
     contadorQuestoes++;
 
     document.getElementById("listaQuestoes").innerHTML += `
-
         <div class="cardQuestao">
 
             <h2>Questão ${contadorQuestoes}</h2>
