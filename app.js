@@ -23,9 +23,13 @@ let contadorQuestoes = 1;
 
 window.adicionarQuestao = function() {
 
+    let contadorQuestoes = 1;
+
+window.adicionarQuestao = function() {
+
     contadorQuestoes++;
 
-    document.getElementById("listaQuestoes").innerHTML += `
+    const novaQuestao = `
         <div class="cardQuestao">
 
             <h2>Questão ${contadorQuestoes}</h2>
@@ -52,8 +56,11 @@ window.adicionarQuestao = function() {
                    placeholder="Alternativa D">
 
         </div>
-
     `;
+
+    document
+        .getElementById("listaQuestoes")
+        .insertAdjacentHTML("beforeend", novaQuestao);
 };
 
 window.salvarMissao = async function() {
