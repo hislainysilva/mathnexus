@@ -295,7 +295,7 @@ textarea{
 
 .dashboard{
     min-height:100vh;
-    padding:40px;
+    padding:20px 40px;
     color:white;
 }
 
@@ -307,8 +307,8 @@ textarea{
 }
 
 .dashboard h1{
-    font-size:56px;
-    margin-top:20px;
+    font-size:48px;
+    margin-top:10px;
 }
 
 .painel-busca{
