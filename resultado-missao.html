@@ -30,10 +30,7 @@
             Resultado<span>Final</span>
         </h1>
 
-        <p
-            class="subtitle"
-            id="nomeMissao"
-        >
+        <p class="subtitle" id="nomeMissao">
             Carregando resultado...
         </p>
 
@@ -45,14 +42,14 @@
         </div>
 
         <h2 id="mensagemResultado">
-            Parabéns!
+            Missão concluída!
         </h2>
 
         <p
             class="mensagem-desempenho"
             id="descricaoResultado"
         >
-            Você concluiu esta missão.
+            Confira seu desempenho.
         </p>
 
         <div
@@ -68,10 +65,13 @@
 
         <div class="resultado-resumo">
 
-            <div class="resultado-item">
+            <div
+                class="resultado-item resultado-nota-destaque"
+                id="cardNota"
+            >
                 <span>⭐</span>
 
-                <p>Nota</p>
+                <p>Nota final</p>
 
                 <strong id="notaResultado">
                     0
@@ -101,7 +101,15 @@
         </div>
 
         <div class="barra-resultado">
-            <div id="barraResultado"></div>
+
+            <div id="barraResultado">
+
+                <span id="textoBarra">
+                    0%
+                </span>
+
+            </div>
+
         </div>
 
         <p
@@ -118,7 +126,7 @@
         <div class="resultado-acoes">
 
             <a
-                href="aluno.html"
+                href="index.html"
                 class="btn aluno resultado-botao"
             >
                 🚀 Participar de outra missão
@@ -150,8 +158,9 @@ function definirDesempenho(nota) {
             icone: "🏆",
             titulo: "Desempenho perfeito!",
             descricao:
-                "Você dominou completamente esta missão. Continue assim!",
-            cor: "#21d07a"
+                "Você dominou completamente esta missão. Parabéns!",
+            cor: "#21d07a",
+            classe: "nota-excelente"
         };
     }
 
@@ -161,7 +170,8 @@ function definirDesempenho(nota) {
             titulo: "Excelente resultado!",
             descricao:
                 "Você demonstrou um ótimo domínio do conteúdo.",
-            cor: "#21d07a"
+            cor: "#21d07a",
+            classe: "nota-excelente"
         };
     }
 
@@ -171,7 +181,8 @@ function definirDesempenho(nota) {
             titulo: "Muito bom!",
             descricao:
                 "Você está no caminho certo. Continue praticando.",
-            cor: "#ffd33d"
+            cor: "#ffd33d",
+            classe: "nota-boa"
         };
     }
 
@@ -181,7 +192,8 @@ function definirDesempenho(nota) {
             titulo: "Continue estudando!",
             descricao:
                 "Revise as questões que errou e tente novamente.",
-            cor: "#ff9f43"
+            cor: "#ff9f43",
+            classe: "nota-regular"
         };
     }
 
@@ -190,8 +202,31 @@ function definirDesempenho(nota) {
         titulo: "Não desanime!",
         descricao:
             "Cada tentativa é uma oportunidade de aprender e evoluir.",
-        cor: "#ff405f"
+        cor: "#ff405f",
+        classe: "nota-baixa"
     };
+}
+
+function animarNota(notaFinal) {
+
+    const campoNota =
+        document.getElementById("notaResultado");
+
+    let notaAtual = 0;
+
+    const intervalo = setInterval(() => {
+
+        notaAtual += 0.1;
+
+        if (notaAtual >= notaFinal) {
+            notaAtual = notaFinal;
+            clearInterval(intervalo);
+        }
+
+        campoNota.textContent =
+            Number(notaAtual.toFixed(1));
+
+    }, 25);
 }
 
 if (!resultado) {
@@ -219,9 +254,6 @@ if (!resultado) {
     document.getElementById("nomeAluno").innerHTML =
         resultado.nome;
 
-    document.getElementById("notaResultado").innerHTML =
-        resultado.nota;
-
     document.getElementById("acertosResultado").innerHTML =
         `${resultado.acertos}/${resultado.total}`;
 
@@ -237,14 +269,29 @@ if (!resultado) {
     document.getElementById("descricaoResultado").innerHTML =
         desempenho.descricao;
 
+    document
+        .getElementById("cardNota")
+        .classList
+        .add(desempenho.classe);
+
+    animarNota(resultado.nota);
+
     const barra =
         document.getElementById("barraResultado");
 
-    barra.style.width =
-        `${resultado.percentual}%`;
+    const textoBarra =
+        document.getElementById("textoBarra");
 
     barra.style.background =
         desempenho.cor;
+
+    setTimeout(() => {
+        barra.style.width =
+            `${resultado.percentual}%`;
+
+        textoBarra.textContent =
+            `${resultado.percentual}%`;
+    }, 250);
 
     const pontosFaltantes =
         Math.max(
@@ -281,41 +328,41 @@ if (!resultado) {
 
                 <div class="resultado-questao-pergunta">
 
-                    <strong>
+                    <strong class="numero-questao">
                         ${icone} Questão ${item.questao}
                     </strong>
 
-                    <p>
+                    <h3>
                         ${item.pergunta}
-                    </p>
+                    </h3>
 
                 </div>
 
                 <div class="resultado-questao-respostas">
 
-                    <p>
+                    <div class="bloco-resposta">
                         <span>Sua resposta</span>
 
                         <strong>
                             ${item.resposta}
                         </strong>
-                    </p>
+                    </div>
 
                     ${
                         item.acertou
                             ? `
-                                <p class="resposta-confirmada">
-                                    Resposta correta!
-                                </p>
+                                <div class="resposta-confirmada">
+                                    ✅ Resposta correta!
+                                </div>
                             `
                             : `
-                                <p>
+                                <div class="bloco-resposta resposta-certa">
                                     <span>Resposta correta</span>
 
                                     <strong>
                                         ${respostaCorreta}
                                     </strong>
-                                </p>
+                                </div>
                             `
                     }
 
