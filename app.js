@@ -355,7 +355,7 @@ document.getElementById("podioRanking").innerHTML = htmlPodio;
                 <div class="cardResposta">
 
                     <div class="avatarPainel">
-                        ${medalha} ${r.avatar}
+                        ${r.avatar}
                     </div>
 
                     <h2>${r.nome}</h2>
