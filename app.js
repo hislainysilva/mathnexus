@@ -294,7 +294,24 @@ window.abrirPainel = function() {
 
         const listaAlunos = Object.values(alunosUnicos)
             .sort((a, b) => (b.nota || 0) - (a.nota || 0));
+const top3 = listaAlunos.slice(0, 3);
 
+let htmlPodio = "";
+
+top3.forEach((aluno, index) => {
+    const medalhas = ["🥇", "🥈", "🥉"];
+
+    htmlPodio += `
+        <div class="podio-card ${index === 0 ? "primeiro" : ""}">
+            <div class="medalha">${medalhas[index]}</div>
+            <h2>${aluno.avatar} ${aluno.nome}</h2>
+            <p>${aluno.turma}</p>
+            <strong>Nota ${aluno.nota ?? "-"}</strong>
+        </div>
+    `;
+});
+
+document.getElementById("podioRanking").innerHTML = htmlPodio;
         document.getElementById("totalParticipantes").innerHTML =
             listaAlunos.length;
 
