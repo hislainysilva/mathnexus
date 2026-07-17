@@ -12,6 +12,8 @@
     <title>Resultado da Missão - MathNexus</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
@@ -149,8 +151,37 @@
 
 const resultado = JSON.parse(
     localStorage.getItem("resultadoAtual")
-);
+    );
 
+    function soltarConfetes() {
+    if (typeof confetti !== "function") {
+        console.error("A biblioteca de confetes não foi carregada.");
+        return;
+    }
+
+    const duracao = 3000;
+    const fim = Date.now() + duracao;
+
+    const intervalo = setInterval(() => {
+        const tempoRestante = fim - Date.now();
+
+        if (tempoRestante <= 0) {
+            clearInterval(intervalo);
+            return;
+        }
+
+        confetti({
+            particleCount: 35,
+            spread: 70,
+            startVelocity: 35,
+            origin: {
+                x: Math.random(),
+                y: Math.random() * 0.35
+            }
+        });
+    }, 250);
+}
+    
 function definirDesempenho(nota) {
 
     if (nota === 10) {
@@ -245,6 +276,10 @@ if (!resultado) {
     const desempenho =
         definirDesempenho(resultado.nota);
 
+    if (resultado.nota >= 8) {
+    setTimeout(soltarConfetes, 500);
+}
+    
     document.getElementById("nomeMissao").innerHTML =
         resultado.tituloMissao;
 
