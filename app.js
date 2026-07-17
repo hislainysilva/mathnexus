@@ -288,7 +288,7 @@ window.abrirPainel = function() {
         return;
     }
 
-    const codigo = campoCodigo.value.toUpperCase();
+    const codigo = campoCodigo.value.trim().toUpperCase();
 
     if (!codigo) {
         alert("Digite o código da missão.");
@@ -300,112 +300,484 @@ window.abrirPainel = function() {
         where("codigo", "==", codigo)
     );
 
-    onSnapshot(consulta, snapshot => {
-        let html = "";
-        const alunosUnicos = {};
+    onSnapshot(
+        consulta,
+        snapshot => {
+            const participantes = {};
 
-        snapshot.forEach(doc => {
-            const r = doc.data();
-            const chave = `${r.nome}_${r.turma}`.toLowerCase();
-            alunosUnicos[chave] = r;
-        });
+            snapshot.forEach(documento => {
+                const resposta = documento.data();
 
-        const listaAlunos = Object.values(alunosUnicos)
-            .sort((a, b) => (b.nota || 0) - (a.nota || 0));
-const top3 = listaAlunos.slice(0, 3);
+                const nome = resposta.nome || "Aluno";
+                const turma = resposta.turma || "Turma não informada";
+                const chave = `${nome}_${turma}`.toLowerCase();
 
-let htmlPodio = "";
+                const horarioAtual =
+                    resposta.enviadaEm?.toMillis?.() ||
+                    resposta.enviadaEm?.seconds * 1000 ||
+                    0;
 
-top3.forEach((aluno, index) => {
-    const medalhas = ["🥇", "🥈", "🥉"];
+                const horarioAnterior =
+                    participantes[chave]?.enviadaEm?.toMillis?.() ||
+                    participantes[chave]?.enviadaEm?.seconds * 1000 ||
+                    0;
 
-    htmlPodio += `
-        <div class="podio-card ${index === 0 ? "primeiro" : ""}">
-            <div class="medalha">${medalhas[index]}</div>
-            <h2>${aluno.avatar} ${aluno.nome}</h2>
-            <p>${aluno.turma}</p>
-            <strong>Nota ${aluno.nota ?? "-"}</strong>
-        </div>
-    `;
-});
+                if (
+                    !participantes[chave] ||
+                    horarioAtual >= horarioAnterior
+                ) {
+                    participantes[chave] = resposta;
+                }
+            });
 
-document.getElementById("podioRanking").innerHTML = htmlPodio;
-        document.getElementById("totalParticipantes").innerHTML =
-            listaAlunos.length;
+            const listaAlunos = Object
+                .values(participantes)
+                .sort((a, b) => {
+                    const diferencaNota =
+                        Number(b.nota || 0) -
+                        Number(a.nota || 0);
 
-        document.getElementById("totalRespostas").innerHTML =
-            snapshot.size;
+                    if (diferencaNota !== 0) {
+                        return diferencaNota;
+                    }
 
-        if (listaAlunos.length === 0) {
-            html = `
-                <p class="subtitle">
-                    Nenhuma resposta recebida ainda.
-                </p>
-            `;
-        }
+                    const percentualA =
+                        Number(a.percentual || 0);
 
-        listaAlunos.forEach((r, index) => {
-            let medalha = "";
+                    const percentualB =
+                        Number(b.percentual || 0);
 
-            if (index === 0) medalha = "🥇";
-            if (index === 1) medalha = "🥈";
-            if (index === 2) medalha = "🥉";
+                    return percentualB - percentualA;
+                });
 
-            let respostaTexto = "";
+            const totalParticipantes =
+                listaAlunos.length;
 
-            if (Array.isArray(r.resposta)) {
-                respostaTexto = r.resposta
-                    .map(item => {
-                        const icone = item.acertou ? "✅" : "❌";
+            document.getElementById(
+                "totalParticipantes"
+            ).textContent = totalParticipantes;
 
-                        return `
-                            <p>
-                                ${icone}
-                                <strong>Questão ${item.questao}:</strong>
-                                ${item.resposta}
-                            </p>
-                        `;
-                    })
-                    .join("");
+            document.getElementById(
+                "totalRespostas"
+            ).textContent = snapshot.size;
+
+            if (totalParticipantes === 0) {
+                limparDashboard();
+                return;
             }
 
-            html += `
-                <div class="cardResposta">
+            const notas = listaAlunos.map(
+                aluno => Number(aluno.nota || 0)
+            );
 
-                    <div class="avatarPainel">
-                        ${r.avatar}
+            const percentuais = listaAlunos.map(
+                aluno => Number(aluno.percentual || 0)
+            );
+
+            const somaNotas = notas.reduce(
+                (total, nota) => total + nota,
+                0
+            );
+
+            const somaPercentuais =
+                percentuais.reduce(
+                    (total, percentual) =>
+                        total + percentual,
+                    0
+                );
+
+            const mediaTurma = Number(
+                (
+                    somaNotas /
+                    totalParticipantes
+                ).toFixed(1)
+            );
+
+            const maiorNota = Math.max(...notas);
+            const menorNota = Math.min(...notas);
+
+            const aproveitamento = Math.round(
+                somaPercentuais /
+                totalParticipantes
+            );
+
+            document.getElementById(
+                "mediaTurma"
+            ).textContent = mediaTurma;
+
+            document.getElementById(
+                "maiorNota"
+            ).textContent = maiorNota;
+
+            document.getElementById(
+                "menorNota"
+            ).textContent = menorNota;
+
+            document.getElementById(
+                "aproveitamentoGeral"
+            ).textContent = `${aproveitamento}%`;
+
+            const primeiraResposta =
+                listaAlunos[0];
+
+            document.getElementById(
+                "identificacaoMissao"
+            ).innerHTML = `
+                <strong>
+                    🚀 ${primeiraResposta.tituloMissao || "Missão"}
+                </strong>
+
+                <span>
+                    Código: ${codigo}
+                </span>
+
+                <span>
+                    Turma: ${primeiraResposta.turma || "Não informada"}
+                </span>
+            `;
+
+            criarPodio(listaAlunos);
+            criarDesempenhoQuestoes(listaAlunos);
+            criarCardsAlunos(listaAlunos);
+        },
+
+        erro => {
+            console.error(
+                "Erro ao carregar o painel:",
+                erro
+            );
+
+            alert(
+                "Não foi possível carregar os dados da missão."
+            );
+        }
+    );
+};
+
+
+/* =========================
+   FUNÇÕES DO DASHBOARD
+========================= */
+
+function limparDashboard() {
+    document.getElementById(
+        "mediaTurma"
+    ).textContent = "0";
+
+    document.getElementById(
+        "maiorNota"
+    ).textContent = "0";
+
+    document.getElementById(
+        "menorNota"
+    ).textContent = "0";
+
+    document.getElementById(
+        "aproveitamentoGeral"
+    ).textContent = "0%";
+
+    document.getElementById(
+        "questaoMaisDificil"
+    ).textContent = "—";
+
+    document.getElementById(
+        "identificacaoMissao"
+    ).textContent =
+        "Nenhuma resposta recebida para esse código.";
+
+    document.getElementById(
+        "podioRanking"
+    ).innerHTML = `
+        <p class="subtitle">
+            Aguardando respostas dos alunos.
+        </p>
+    `;
+
+    document.getElementById(
+        "desempenhoQuestoes"
+    ).innerHTML = `
+        <p class="subtitle">
+            As estatísticas aparecerão quando houver respostas.
+        </p>
+    `;
+
+    document.getElementById(
+        "painelRespostas"
+    ).innerHTML = `
+        <p class="subtitle">
+            Nenhum resultado recebido.
+        </p>
+    `;
+}
+
+
+function criarPodio(listaAlunos) {
+    const top3 = listaAlunos.slice(0, 3);
+    const medalhas = ["🥇", "🥈", "🥉"];
+
+    let html = "";
+
+    top3.forEach((aluno, indice) => {
+        html += `
+            <article
+                class="
+                    podio-card
+                    ${indice === 0 ? "primeiro" : ""}
+                "
+            >
+                <div class="medalha">
+                    ${medalhas[indice]}
+                </div>
+
+                <div class="podio-avatar">
+                    ${aluno.avatar || "😀"}
+                </div>
+
+                <h2>
+                    ${aluno.nome || "Aluno"}
+                </h2>
+
+                <p>
+                    ${aluno.turma || ""}
+                </p>
+
+                <strong>
+                    Nota ${aluno.nota ?? 0}
+                </strong>
+
+                <span class="podio-percentual">
+                    ${aluno.percentual ?? 0}% de acertos
+                </span>
+            </article>
+        `;
+    });
+
+    document.getElementById(
+        "podioRanking"
+    ).innerHTML = html;
+}
+
+
+function criarDesempenhoQuestoes(listaAlunos) {
+    const estatisticas = {};
+
+    listaAlunos.forEach(aluno => {
+        if (!Array.isArray(aluno.resposta)) {
+            return;
+        }
+
+        aluno.resposta.forEach(item => {
+            const numero =
+                Number(item.questao);
+
+            if (!estatisticas[numero]) {
+                estatisticas[numero] = {
+                    numero,
+                    pergunta:
+                        item.pergunta ||
+                        `Questão ${numero}`,
+                    total: 0,
+                    acertos: 0
+                };
+            }
+
+            estatisticas[numero].total++;
+
+            if (item.acertou) {
+                estatisticas[numero].acertos++;
+            }
+        });
+    });
+
+    const listaQuestoes = Object
+        .values(estatisticas)
+        .sort((a, b) => a.numero - b.numero);
+
+    if (listaQuestoes.length === 0) {
+        document.getElementById(
+            "desempenhoQuestoes"
+        ).innerHTML = `
+            <p class="subtitle">
+                Não há dados suficientes para calcular o desempenho.
+            </p>
+        `;
+
+        document.getElementById(
+            "questaoMaisDificil"
+        ).textContent = "—";
+
+        return;
+    }
+
+    let questaoMaisDificil =
+        listaQuestoes[0];
+
+    let menorPercentual = 101;
+    let html = "";
+
+    listaQuestoes.forEach(questao => {
+        const percentual = Math.round(
+            (
+                questao.acertos /
+                questao.total
+            ) * 100
+        );
+
+        if (percentual < menorPercentual) {
+            menorPercentual = percentual;
+            questaoMaisDificil = questao;
+        }
+
+        let classe = "desempenho-alto";
+
+        if (percentual < 70) {
+            classe = "desempenho-medio";
+        }
+
+        if (percentual < 50) {
+            classe = "desempenho-baixo";
+        }
+
+        html += `
+            <article class="questao-estatistica">
+
+                <div class="questao-estatistica-topo">
+
+                    <div>
+                        <strong>
+                            Questão ${questao.numero}
+                        </strong>
+
+                        <p>
+                            ${questao.pergunta}
+                        </p>
                     </div>
 
-                    <h2>${r.nome}</h2>
-
-                    <div class="turmaPainel">
-                        ${r.turma}
-                    </div>
-
-                    <div class="missaoPainel">
-                        ${r.tituloMissao}
-                    </div>
-
-                    <div class="respostaPainel">
-                        Nota: ${r.nota ?? "-"}
-                    </div>
-
-                    <p>
-                        <strong>Acertos:</strong>
-                        ${r.acertos ?? 0}/${r.total ?? 0}
-                    </p>
-
-                    <p>
-                        <strong>Percentual:</strong>
-                        ${r.percentual ?? 0}%
-                    </p>
-
-                    ${respostaTexto}
+                    <span class="${classe}">
+                        ${percentual}%
+                    </span>
 
                 </div>
-            `;
-        });
 
-        document.getElementById("painelRespostas").innerHTML = html;
+                <div class="barra-estatistica">
+
+                    <div
+                        class="${classe}"
+                        style="width:${percentual}%"
+                    ></div>
+
+                </div>
+
+                <small>
+                    ${questao.acertos}
+                    acerto(s) em
+                    ${questao.total}
+                    resposta(s)
+                </small>
+
+            </article>
+        `;
     });
+
+    document.getElementById(
+        "questaoMaisDificil"
+    ).textContent =
+        `Questão ${questaoMaisDificil.numero}`;
+
+    document.getElementById(
+        "desempenhoQuestoes"
+    ).innerHTML = html;
+}
+
+
+function criarCardsAlunos(listaAlunos) {
+    let html = "";
+
+    listaAlunos.forEach((aluno, indice) => {
+        let respostasHtml = "";
+
+        if (Array.isArray(aluno.resposta)) {
+            respostasHtml = aluno.resposta
+                .map(item => {
+                    const icone =
+                        item.acertou
+                            ? "✅"
+                            : "❌";
+
+                    return `
+                        <p class="resposta-individual">
+                            ${icone}
+
+                            <strong>
+                                Questão ${item.questao}:
+                            </strong>
+
+                            ${item.resposta}
+                        </p>
+                    `;
+                })
+                .join("");
+        }
+
+        let classeNota = "nota-alta";
+
+        if (Number(aluno.nota || 0) < 7) {
+            classeNota = "nota-media";
+        }
+
+        if (Number(aluno.nota || 0) < 5) {
+            classeNota = "nota-baixa-painel";
+        }
+
+        html += `
+            <article class="cardResposta">
+
+                <div class="posicao-ranking">
+                    ${indice + 1}º
+                </div>
+
+                <div class="avatarPainel">
+                    ${aluno.avatar || "😀"}
+                </div>
+
+                <h2>
+                    ${aluno.nome || "Aluno"}
+                </h2>
+
+                <div class="turmaPainel">
+                    ${aluno.turma || ""}
+                </div>
+
+                <div class="missaoPainel">
+                    ${aluno.tituloMissao || ""}
+                </div>
+
+                <div class="nota-painel ${classeNota}">
+                    Nota ${aluno.nota ?? 0}
+                </div>
+
+                <div class="resumo-aluno-painel">
+
+                    <span>
+                        ✅ ${aluno.acertos ?? 0}/${aluno.total ?? 0}
+                    </span>
+
+                    <span>
+                        📊 ${aluno.percentual ?? 0}%
+                    </span>
+
+                </div>
+
+                <div class="respostas-aluno-painel">
+                    ${respostasHtml}
+                </div>
+
+            </article>
+        `;
+    });
+
+    document.getElementById(
+        "painelRespostas"
+    ).innerHTML = html;
+}
 };
