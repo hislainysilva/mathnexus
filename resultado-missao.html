@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
-<title>Resultado da Missão - MathNexus</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<link rel="stylesheet" href="style.css">
+    <title>Resultado da Missão - MathNexus</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -25,11 +30,35 @@
             Resultado<span>Final</span>
         </h1>
 
-        <p class="subtitle" id="nomeMissao">
+        <p
+            class="subtitle"
+            id="nomeMissao"
+        >
             Carregando resultado...
         </p>
 
-        <div class="resultado-avatar" id="avatarResultado">
+        <div
+            class="resultado-desempenho"
+            id="iconeDesempenho"
+        >
+            🏆
+        </div>
+
+        <h2 id="mensagemResultado">
+            Parabéns!
+        </h2>
+
+        <p
+            class="mensagem-desempenho"
+            id="descricaoResultado"
+        >
+            Você concluiu esta missão.
+        </p>
+
+        <div
+            class="resultado-avatar"
+            id="avatarResultado"
+        >
             😀
         </div>
 
@@ -41,20 +70,32 @@
 
             <div class="resultado-item">
                 <span>⭐</span>
+
                 <p>Nota</p>
-                <strong id="notaResultado">0</strong>
+
+                <strong id="notaResultado">
+                    0
+                </strong>
             </div>
 
             <div class="resultado-item">
                 <span>✅</span>
+
                 <p>Acertos</p>
-                <strong id="acertosResultado">0/0</strong>
+
+                <strong id="acertosResultado">
+                    0/0
+                </strong>
             </div>
 
             <div class="resultado-item">
                 <span>📊</span>
+
                 <p>Percentual</p>
-                <strong id="percentualResultado">0%</strong>
+
+                <strong id="percentualResultado">
+                    0%
+                </strong>
             </div>
 
         </div>
@@ -63,29 +104,112 @@
             <div id="barraResultado"></div>
         </div>
 
+        <p
+            class="mensagem-pontos"
+            id="mensagemPontos"
+        ></p>
+
         <h2 class="resultado-titulo">
-            Resumo das questões
+            📝 Resumo das questões
         </h2>
 
         <div id="listaResultado"></div>
 
-        <a href="aluno.html" class="btn aluno resultado-botao">
-            🚀 Participar de outra missão
-        </a>
+        <div class="resultado-acoes">
+
+            <a
+                href="aluno.html"
+                class="btn aluno resultado-botao"
+            >
+                🚀 Participar de outra missão
+            </a>
+
+            <a
+                href="index.html"
+                class="btn professor resultado-botao"
+            >
+                🏠 Voltar ao início
+            </a>
+
+        </div>
 
     </section>
 
 </main>
 
 <script>
+
 const resultado = JSON.parse(
     localStorage.getItem("resultadoAtual")
 );
 
+function definirDesempenho(nota) {
+
+    if (nota === 10) {
+        return {
+            icone: "🏆",
+            titulo: "Desempenho perfeito!",
+            descricao:
+                "Você dominou completamente esta missão. Continue assim!",
+            cor: "#21d07a"
+        };
+    }
+
+    if (nota >= 8) {
+        return {
+            icone: "🥇",
+            titulo: "Excelente resultado!",
+            descricao:
+                "Você demonstrou um ótimo domínio do conteúdo.",
+            cor: "#21d07a"
+        };
+    }
+
+    if (nota >= 6) {
+        return {
+            icone: "👏",
+            titulo: "Muito bom!",
+            descricao:
+                "Você está no caminho certo. Continue praticando.",
+            cor: "#ffd33d"
+        };
+    }
+
+    if (nota >= 4) {
+        return {
+            icone: "📚",
+            titulo: "Continue estudando!",
+            descricao:
+                "Revise as questões que errou e tente novamente.",
+            cor: "#ff9f43"
+        };
+    }
+
+    return {
+        icone: "💪",
+        titulo: "Não desanime!",
+        descricao:
+            "Cada tentativa é uma oportunidade de aprender e evoluir.",
+        cor: "#ff405f"
+    };
+}
+
 if (!resultado) {
+
     document.getElementById("nomeMissao").innerHTML =
         "Nenhum resultado encontrado.";
+
+    document.getElementById("listaResultado").innerHTML = `
+        <div class="resultado-vazio">
+            Não encontramos os dados desta missão.
+        </div>
+    `;
+
 } else {
+
+    const desempenho =
+        definirDesempenho(resultado.nota);
+
     document.getElementById("nomeMissao").innerHTML =
         resultado.tituloMissao;
 
@@ -104,18 +228,59 @@ if (!resultado) {
     document.getElementById("percentualResultado").innerHTML =
         `${resultado.percentual}%`;
 
-    document.getElementById("barraResultado").style.width =
+    document.getElementById("iconeDesempenho").innerHTML =
+        desempenho.icone;
+
+    document.getElementById("mensagemResultado").innerHTML =
+        desempenho.titulo;
+
+    document.getElementById("descricaoResultado").innerHTML =
+        desempenho.descricao;
+
+    const barra =
+        document.getElementById("barraResultado");
+
+    barra.style.width =
         `${resultado.percentual}%`;
+
+    barra.style.background =
+        desempenho.cor;
+
+    const pontosFaltantes =
+        Math.max(
+            0,
+            Number((10 - resultado.nota).toFixed(1))
+        );
+
+    document.getElementById("mensagemPontos").innerHTML =
+        resultado.nota === 10
+            ? "🌟 Você alcançou a nota máxima!"
+            : `Faltaram ${pontosFaltantes} ponto(s) para alcançar a nota máxima.`;
 
     let html = "";
 
     resultado.resposta.forEach(item => {
-        const classe = item.acertou ? "resultado-correto" : "resultado-errado";
-        const icone = item.acertou ? "✅" : "❌";
+
+        const classe =
+            item.acertou
+                ? "resultado-correto"
+                : "resultado-errado";
+
+        const icone =
+            item.acertou
+                ? "✅"
+                : "❌";
+
+        const respostaCorreta =
+            item.respostaCorreta ||
+            item.correta ||
+            "Não informada";
 
         html += `
             <div class="resultado-questao ${classe}">
-                <div>
+
+                <div class="resultado-questao-pergunta">
+
                     <strong>
                         ${icone} Questão ${item.questao}
                     </strong>
@@ -123,31 +288,48 @@ if (!resultado) {
                     <p>
                         ${item.pergunta}
                     </p>
+
                 </div>
 
-                <div>
+                <div class="resultado-questao-respostas">
+
                     <p>
-                        <strong>Sua resposta:</strong>
-                        ${item.resposta}
+                        <span>Sua resposta</span>
+
+                        <strong>
+                            ${item.resposta}
+                        </strong>
                     </p>
 
                     ${
                         item.acertou
-                            ? ""
+                            ? `
+                                <p class="resposta-confirmada">
+                                    Resposta correta!
+                                </p>
+                            `
                             : `
                                 <p>
-                                    <strong>Alternativa correta:</strong>
-                                    ${item.correta}
+                                    <span>Resposta correta</span>
+
+                                    <strong>
+                                        ${respostaCorreta}
+                                    </strong>
                                 </p>
                             `
                     }
+
                 </div>
+
             </div>
         `;
     });
 
-    document.getElementById("listaResultado").innerHTML = html;
+    document.getElementById(
+        "listaResultado"
+    ).innerHTML = html;
 }
+
 </script>
 
 </body>
