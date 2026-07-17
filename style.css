@@ -833,3 +833,150 @@ textarea{
         width:100%;
     }
 }
+
+/* DESTAQUE DA NOTA */
+
+.resultado-nota-destaque{
+    position:relative;
+    transform:scale(1.04);
+}
+
+.resultado-nota-destaque strong{
+    font-size:46px;
+}
+
+.nota-excelente{
+    border-color:rgba(33,208,122,.7);
+    box-shadow:0 0 25px rgba(33,208,122,.2);
+}
+
+.nota-excelente strong{
+    color:#21d07a;
+}
+
+.nota-boa{
+    border-color:rgba(255,211,61,.7);
+    box-shadow:0 0 25px rgba(255,211,61,.18);
+}
+
+.nota-boa strong{
+    color:#ffd33d;
+}
+
+.nota-regular{
+    border-color:rgba(255,159,67,.7);
+    box-shadow:0 0 25px rgba(255,159,67,.2);
+}
+
+.nota-regular strong{
+    color:#ff9f43;
+}
+
+.nota-baixa{
+    border-color:rgba(255,64,95,.7);
+    box-shadow:0 0 25px rgba(255,64,95,.2);
+}
+
+.nota-baixa strong{
+    color:#ff405f;
+}
+
+/* BARRA COM PORCENTAGEM */
+
+.barra-resultado{
+    height:24px;
+}
+
+#barraResultado{
+    width:0;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    border-radius:20px;
+    overflow:hidden;
+    transition:width 1s ease;
+}
+
+#textoBarra{
+    padding:0 10px;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+/* QUESTÕES */
+
+.resultado-questao-pergunta h3{
+    margin-top:12px;
+    color:white;
+    font-size:20px;
+    line-height:1.4;
+}
+
+.numero-questao{
+    font-size:17px;
+}
+
+.bloco-resposta{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    padding:12px 15px;
+    background:rgba(255,255,255,.025);
+    border-radius:12px;
+}
+
+.bloco-resposta span{
+    color:#888;
+    font-size:14px;
+}
+
+.bloco-resposta strong{
+    color:white;
+    font-size:20px;
+}
+
+.resposta-certa{
+    background:rgba(33,208,122,.08);
+    border:1px solid rgba(33,208,122,.25);
+}
+
+.resposta-certa strong{
+    color:#21d07a;
+}
+
+.resposta-confirmada{
+    padding:12px 15px;
+    color:#21d07a;
+    background:rgba(33,208,122,.08);
+    border-radius:12px;
+    font-weight:bold;
+}
+
+/* ANIMAÇÃO DOS CARDS */
+
+.resultado-item{
+    animation:subirCard .6s ease both;
+}
+
+.resultado-item:nth-child(2){
+    animation-delay:.12s;
+}
+
+.resultado-item:nth-child(3){
+    animation-delay:.24s;
+}
+
+@keyframes subirCard{
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
