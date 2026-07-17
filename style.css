@@ -980,3 +980,253 @@ textarea{
         transform:translateY(0);
     }
 }
+
+/* =========================
+   DASHBOARD PEDAGÓGICO
+========================= */
+
+.painel-identificacao{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:12px;
+    margin-bottom:25px;
+    padding:16px 20px;
+    background:rgba(15,15,15,.9);
+    border:1px solid rgba(0,170,255,.2);
+    border-radius:18px;
+    color:#bbb;
+}
+
+.painel-identificacao strong{
+    color:white;
+    margin-right:auto;
+}
+
+.painel-identificacao span{
+    background:#111;
+    padding:8px 12px;
+    border-radius:10px;
+}
+
+.cards-estatisticas{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(180px,1fr));
+    gap:18px;
+    margin-bottom:35px;
+}
+
+.estatistica-card{
+    background:rgba(17,17,17,.96);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    padding:22px;
+    min-height:145px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    box-shadow:0 0 22px rgba(0,170,255,.08);
+}
+
+.estatistica-icone{
+    font-size:32px;
+}
+
+.estatistica-card p{
+    margin:10px 0;
+    color:#aaa;
+}
+
+.estatistica-card strong{
+    color:#00aaff;
+    font-size:29px;
+}
+
+.destaque-alerta strong{
+    color:#ff9f43;
+}
+
+.secao-dashboard{
+    margin-top:42px;
+}
+
+.titulo-secao-dashboard{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.titulo-secao-dashboard h2{
+    margin-bottom:6px;
+}
+
+.titulo-secao-dashboard p{
+    color:#999;
+}
+
+.contador-respostas{
+    background:#111;
+    padding:12px 16px;
+    border-radius:14px;
+    color:#aaa;
+}
+
+.contador-respostas strong{
+    color:#00aaff;
+}
+
+.podio-percentual{
+    display:block;
+    margin-top:10px;
+    color:#aaa;
+    font-size:14px;
+}
+
+.podio-avatar{
+    font-size:42px;
+    margin:10px 0;
+}
+
+.desempenho-questoes{
+    display:grid;
+    gap:16px;
+}
+
+.questao-estatistica{
+    background:#111;
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:18px;
+    padding:20px;
+}
+
+.questao-estatistica-topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+}
+
+.questao-estatistica-topo p{
+    color:#aaa;
+    margin-top:6px;
+}
+
+.questao-estatistica-topo span{
+    min-width:64px;
+    padding:8px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.barra-estatistica{
+    height:12px;
+    margin:16px 0 10px;
+    background:#090909;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.barra-estatistica div{
+    height:100%;
+    border-radius:20px;
+    transition:width .7s ease;
+}
+
+.desempenho-alto{
+    background:#21d07a;
+    color:white;
+}
+
+.desempenho-medio{
+    background:#ff9f43;
+    color:white;
+}
+
+.desempenho-baixo{
+    background:#ff405f;
+    color:white;
+}
+
+.questao-estatistica small{
+    color:#777;
+}
+
+.cardResposta{
+    position:relative;
+}
+
+.posicao-ranking{
+    position:absolute;
+    top:16px;
+    right:16px;
+    padding:7px 10px;
+    background:#090909;
+    border-radius:10px;
+    color:#aaa;
+    font-weight:bold;
+}
+
+.nota-painel{
+    margin-top:18px;
+    padding:10px 16px;
+    border-radius:12px;
+    font-size:25px;
+    font-weight:bold;
+}
+
+.nota-alta{
+    color:#21d07a;
+    background:rgba(33,208,122,.08);
+}
+
+.nota-media{
+    color:#ff9f43;
+    background:rgba(255,159,67,.08);
+}
+
+.nota-baixa-painel{
+    color:#ff405f;
+    background:rgba(255,64,95,.08);
+}
+
+.resumo-aluno-painel{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:14px;
+    color:#bbb;
+}
+
+.respostas-aluno-painel{
+    width:100%;
+    margin-top:18px;
+    padding-top:15px;
+    border-top:1px solid rgba(255,255,255,.07);
+}
+
+.resposta-individual{
+    margin:8px 0;
+    color:#ccc;
+    text-align:left;
+}
+
+@media(max-width:700px){
+
+    .titulo-secao-dashboard{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .painel-identificacao{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .questao-estatistica-topo{
+        flex-direction:column;
+    }
+}
