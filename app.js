@@ -780,4 +780,3 @@ function criarCardsAlunos(listaAlunos) {
         "painelRespostas"
     ).innerHTML = html;
 }
-};
