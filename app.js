@@ -252,10 +252,27 @@ window.enviarResposta = async function() {
         enviadaEm: new Date()
     });
 
-    localStorage.removeItem("respostasMissao");
-    localStorage.removeItem("alternativaAtual");
+    const resultadoFinal = {
+    nome: aluno.nome,
+    turma: aluno.turma,
+    avatar: aluno.avatar,
+    tituloMissao: missao.titulo,
+    resposta: respostasCorrigidas,
+    acertos,
+    total,
+    nota,
+    percentual
+};
 
-    alert(`Missão concluída! Nota: ${nota}`);
+localStorage.setItem(
+    "resultadoAtual",
+    JSON.stringify(resultadoFinal)
+);
+
+localStorage.removeItem("respostasMissao");
+localStorage.removeItem("alternativaAtual");
+
+window.location.href = "resultado-missao.html";
 };
 
 /* =========================
