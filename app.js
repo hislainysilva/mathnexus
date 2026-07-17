@@ -224,13 +224,14 @@ window.enviarResposta = async function() {
         }
 
         return {
-            questao: item.questao,
-            pergunta: item.pergunta,
-            resposta: item.resposta,
-            alternativa: item.alternativa,
-            correta: questao.correta,
-            acertou: acertou
-        };
+    questao: item.questao,
+    pergunta: item.pergunta,
+    resposta: item.resposta,
+    alternativa: item.alternativa,
+    correta: questao.correta,
+    respostaCorreta: questao[questao.correta],
+    acertou: acertou
+};
     });
 
     const total = missao.questoes.length;
