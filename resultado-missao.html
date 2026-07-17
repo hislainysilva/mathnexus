@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Resultado da Missão - MathNexus</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<main class="resultado-container">
+
+    <section class="resultado-card">
+
+        <div class="badge">
+            🏆 MISSÃO CONCLUÍDA
+        </div>
+
+        <h1>
+            Resultado<span>Final</span>
+        </h1>
+
+        <p class="subtitle" id="nomeMissao">
+            Carregando resultado...
+        </p>
+
+        <div class="resultado-avatar" id="avatarResultado">
+            😀
+        </div>
+
+        <h2 id="nomeAluno">
+            Aluno
+        </h2>
+
+        <div class="resultado-resumo">
+
+            <div class="resultado-item">
+                <span>⭐</span>
+                <p>Nota</p>
+                <strong id="notaResultado">0</strong>
+            </div>
+
+            <div class="resultado-item">
+                <span>✅</span>
+                <p>Acertos</p>
+                <strong id="acertosResultado">0/0</strong>
+            </div>
+
+            <div class="resultado-item">
+                <span>📊</span>
+                <p>Percentual</p>
+                <strong id="percentualResultado">0%</strong>
+            </div>
+
+        </div>
+
+        <div class="barra-resultado">
+            <div id="barraResultado"></div>
+        </div>
+
+        <h2 class="resultado-titulo">
+            Resumo das questões
+        </h2>
+
+        <div id="listaResultado"></div>
+
+        <a href="aluno.html" class="btn aluno resultado-botao">
+            🚀 Participar de outra missão
+        </a>
+
+    </section>
+
+</main>
+
+<script>
+const resultado = JSON.parse(
+    localStorage.getItem("resultadoAtual")
+);
+
+if (!resultado) {
+    document.getElementById("nomeMissao").innerHTML =
+        "Nenhum resultado encontrado.";
+} else {
+    document.getElementById("nomeMissao").innerHTML =
+        resultado.tituloMissao;
+
+    document.getElementById("avatarResultado").innerHTML =
+        resultado.avatar;
+
+    document.getElementById("nomeAluno").innerHTML =
+        resultado.nome;
+
+    document.getElementById("notaResultado").innerHTML =
+        resultado.nota;
+
+    document.getElementById("acertosResultado").innerHTML =
+        `${resultado.acertos}/${resultado.total}`;
+
+    document.getElementById("percentualResultado").innerHTML =
+        `${resultado.percentual}%`;
+
+    document.getElementById("barraResultado").style.width =
+        `${resultado.percentual}%`;
+
+    let html = "";
+
+    resultado.resposta.forEach(item => {
+        const classe = item.acertou ? "resultado-correto" : "resultado-errado";
+        const icone = item.acertou ? "✅" : "❌";
+
+        html += `
+            <div class="resultado-questao ${classe}">
+                <div>
+                    <strong>
+                        ${icone} Questão ${item.questao}
+                    </strong>
+
+                    <p>
+                        ${item.pergunta}
+                    </p>
+                </div>
+
+                <div>
+                    <p>
+                        <strong>Sua resposta:</strong>
+                        ${item.resposta}
+                    </p>
+
+                    ${
+                        item.acertou
+                            ? ""
+                            : `
+                                <p>
+                                    <strong>Alternativa correta:</strong>
+                                    ${item.correta}
+                                </p>
+                            `
+                    }
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById("listaResultado").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
